@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+</head>
+<body>
+    <h1>🧾 Lista de productos</h1>
+
+    <form action="/agregar_producto" method="post">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="descripcion" placeholder="Descripción">
+        <input type="number" name="precio" step="0.01" placeholder="Precio" required>
+        <input type="number" name="stock" placeholder="Stock" required>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <hr>
+
+    <table border="1">
+        <tr>
+            <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th>
+        </tr>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.id_producto }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.descripcion }}</td>
+            <td>{{ p.precio }}</td>
+            <td>{{ p.stock }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/">🏠 Volver al inicio</a></p>
+</body>
+</html>
