@@ -2,36 +2,63 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Productos</title>
+    <title>Lista de productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+
 </head>
 <body>
-    <h1>🧾 Lista de productos</h1>
+    <header>
+        <h1>🧾 Lista de productos</h1>
+    </header>
 
-    <form action="/agregar_producto" method="post">
-        <input type="text" name="nombre" placeholder="Nombre" required>
-        <input type="text" name="descripcion" placeholder="Descripción">
-        <input type="number" name="precio" step="0.01" placeholder="Precio" required>
-        <input type="number" name="stock" placeholder="Stock" required>
-        <button type="submit">Agregar</button>
-    </form>
+   <form action="/agregar_producto" method="post">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="text" name="descripcion" placeholder="Descripción">
+    <input type="number" name="precio" step="0.01" placeholder="Precio" required>
+    <input type="number" name="stock" placeholder="Stock" required>
 
-    <hr>
-
-    <table border="1">
-        <tr>
-            <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th>
-        </tr>
-        {% for p in productos %}
-        <tr>
-            <td>{{ p.id_producto }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>{{ p.descripcion }}</td>
-            <td>{{ p.precio }}</td>
-            <td>{{ p.stock }}</td>
-        </tr>
+    <select name="proveedor_id" required>
+        <option value="">-- Selecciona proveedor --</option>
+        {% for prov in proveedores %}
+            <option value="{{ prov.id_proveedor }}">{{ prov.nombre }}</option>
         {% endfor %}
+    </select>
+
+    <button type="submit">Agregar</button>
+</form>
+
+
+    <table>
+        <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Descripción</th>
+    <th>Precio</th>
+    <th>Stock</th>
+    <th>Proveedor</th>
+    <th>Acciones</th>
+</tr>
+
+{% for p in productos %}
+<tr>
+    <td>{{ p.id_producto }}</td>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.descripcion }}</td>
+    <td>${{ p.precio }}</td>
+    <td>{{ p.stock }}</td>
+    <td>{{ p.proveedor if p.proveedor else 'Sin asignar' }}</td>
+    <td class="acciones">
+        <a href="/editar_producto/{{ p.id_producto }}">✏️ Editar</a> |
+        <a href="/eliminar_producto/{{ p.id_producto }}" onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑️ Eliminar</a>
+    </td>
+</tr>
+{% endfor %}
+
     </table>
 
-    <p><a href="/">🏠 Volver al inicio</a></p>
+    <div class="volver">
+        <a href="/">🏠 Volver al inicio</a>
+    </div>
 </body>
 </html>
+

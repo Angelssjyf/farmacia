@@ -1,0 +1,147 @@
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f8faf8;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #013220; /* verde marino */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+input[type="text"], 
+input[type="number"], 
+input[type="date"], 
+select {
+    padding: 8px;
+    margin: 8px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 22%;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+input:focus, 
+select:focus {
+    outline: none;
+    border-color: #00693e;
+    box-shadow: 0 0 4px rgba(0,105,62,0.5);
+}
+
+
+button {
+    background-color: #00693e;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #00994c;
+}
+
+table {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #00693e;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+a {
+    text-decoration: none;
+    color: #00693e;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #00994c;
+}
+
+.acciones a {
+    margin: 0 5px;
+}
+
+.volver {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.volver a {
+    color: #013220;
+    background-color: #ffd700;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.volver a:hover {
+    background-color: #ffcc00;
+}
+/* === LOGIN Y MENÚ PRINCIPAL === */
+.login-box, .menu-box {
+    max-width: 400px;
+    margin: 80px auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+    padding: 30px;
+    text-align: center;
+}
+
+.login-box h2, .menu-box h2 {
+    color: #0a3d62;
+}
+
+.error {
+    color: white;
+    background-color: #c0392b;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.menu-box button {
+    width: 80%;
+    margin: 10px 0;
+}

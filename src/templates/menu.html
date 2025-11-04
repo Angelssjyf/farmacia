@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+
+</head>
+<body>
+    <header>
+        <h1>🏠 Menú principal</h1>
+    </header>
+
+    <div class="menu-box">
+        <h2>Bienvenido al Sistema de Farmacia</h2>
+        <p>Selecciona una opción:</p>
+
+        <a href="/productos"><button>🧾 Productos</button></a>
+        <a href="/proveedores"><button>🏭 Proveedores</button></a>
+        <a href="/clientes"><button>👥 Clientes</button></a>
+        <a href="/ventas"><button>💰 Ventas</button></a>
+        <br><br>
+        <a href="/logout"><button style="background-color:#c0392b;">🚪 Cerrar sesión</button></a>
+    </div>
+</body>
+</html>

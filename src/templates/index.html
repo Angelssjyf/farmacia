@@ -2,12 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Farmacia - Inicio</title>
+    <title>Inicio - Norte salud nv</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+
 </head>
 <body>
-    <h1>💊 Bienvenido al Sistema de Farmacia</h1>
-    <ul>
-        <li><a href="/productos">Ver Productos</a></li>
-    </ul>
+    <header>
+        <h1>🏥 Norte salud nv</h1>
+        <p>Bienvenido(a), selecciona una opción para comenzar</p>
+    </header>
+
+    <main style="text-align:center; margin-top: 60px;">
+        <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+            <a href="/productos" style="
+                background-color:#00693e;
+                color:white;
+                padding:20px 30px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:18px;
+                box-shadow:0 2px 5px rgba(0,0,0,0.2);
+                transition: background 0.3s;">
+                💊 Productos
+            </a>
+
+            <a href="#" style="
+                background-color:#ffd700;
+                color:#013220;
+                padding:20px 30px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:18px;
+                box-shadow:0 2px 5px rgba(0,0,0,0.2);
+                transition: background 0.3s;">
+                🧾 Ventas (próximamente)
+            </a>
+
+            <a href="#" style="
+                background-color:#ffffff;
+                color:#00693e;
+                border:2px solid #00693e;
+                padding:20px 30px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:18px;
+                box-shadow:0 2px 5px rgba(0,0,0,0.2);
+                transition: background 0.3s;">
+                👥 Clientes (próximamente)
+            </a>
+
+            <a href="/proveedores" style="
+                background-color:#013220;
+                color:white;
+                padding:20px 30px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:18px;
+                box-shadow:0 2px 5px rgba(0,0,0,0.2);
+                transition: background 0.3s;">
+                🚚 Proveedores
+            </a>
+
+        </div>
+    </main>
+
+    <footer style="text-align:center; margin-top:80px; padding:20px; background:#013220; color:white;">
+        <p>Desarrollado por angel vega © 2025</p>
+    </footer>
 </body>
 </html>
