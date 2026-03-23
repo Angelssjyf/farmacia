@@ -4,61 +4,106 @@
     <meta charset="UTF-8">
     <title>Lista de productos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-
 </head>
 <body>
-    <header>
-        <h1>🧾 Lista de productos</h1>
-    </header>
 
-   <form action="/agregar_producto" method="post">
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <input type="text" name="descripcion" placeholder="Descripción">
-    <input type="number" name="precio" step="0.01" placeholder="Precio" required>
-    <input type="number" name="stock" placeholder="Stock" required>
+<header>
+    <h1>🧾 Lista de productos</h1>
+</header>
 
-    <select name="proveedor_id" required>
-        <option value="">-- Selecciona proveedor --</option>
-        {% for prov in proveedores %}
-            <option value="{{ prov.id_proveedor }}">{{ prov.nombre }}</option>
+{% with mensajes = get_flashed_messages(with_categories=True) %}
+    {% if mensajes %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert {{ categoria }}">{{ mensaje }}</div>
         {% endfor %}
-    </select>
-
-    <button type="submit">Agregar</button>
-</form>
+    {% endif %}
+{% endwith %}
 
 
+<section class="form-contenedor">
+    <form action="/agregar_producto" method="post" class="form-producto">
+
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="descripcion" placeholder="Descripción">
+        <input type="number" name="precio" step="0.01" placeholder="Precio" required>
+        <input type="number" name="stock" placeholder="Stock" required>
+
+        <select name="proveedor_id" required>
+            <option value="">-- Selecciona proveedor --</option>
+            {% for prov in proveedores %}
+                <option value="{{ prov.id_proveedor }}">{{ prov.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn-agregar">➕ Agregar</button>
+    </form>
+</section>
+
+<section>
     <table>
-        <tr>
-    <th>ID</th>
-    <th>Nombre</th>
-    <th>Descripción</th>
-    <th>Precio</th>
-    <th>Stock</th>
-    <th>Proveedor</th>
-    <th>Acciones</th>
-</tr>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Proveedor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+<script>
+  // busca alertas y hazlas desaparecer tras 2s
+  window.addEventListener('DOMContentLoaded', () => {
+    const mensajes = document.querySelectorAll('.alert');
+    if (!mensajes.length) return;
 
-{% for p in productos %}
-<tr>
-    <td>{{ p.id_producto }}</td>
-    <td>{{ p.nombre }}</td>
-    <td>{{ p.descripcion }}</td>
-    <td>${{ p.precio }}</td>
-    <td>{{ p.stock }}</td>
-    <td>{{ p.proveedor if p.proveedor else 'Sin asignar' }}</td>
-    <td class="acciones">
-        <a href="/editar_producto/{{ p.id_producto }}">✏️ Editar</a> |
-        <a href="/eliminar_producto/{{ p.id_producto }}" onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑️ Eliminar</a>
-    </td>
-</tr>
-{% endfor %}
+    // espera 2 segundos y luego les añade clase para animar la salida
+    setTimeout(() => {
+      mensajes.forEach(msg => {
+        msg.classList.add('fade-out');
+        // luego de 900ms (igual o mayor al CSS transition) remueve del DOM
+        setTimeout(() => {
+          if (msg.parentNode) msg.parentNode.removeChild(msg);
+        }, 900);
+      });
+    }, 2000); // 2000 ms = 2 segundos
+  });
+</script>
 
+        <tbody>
+            {% for p in productos %}
+            <tr>
+                <td>{{ p.id_producto }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.descripcion }}</td>
+                <td>${{ p.precio }}</td>
+                <td>{{ p.stock }}</td>
+                <td>{{ p.proveedor if p.proveedor else 'Sin asignar' }}</td>
+
+                <td class="acciones">
+    <a href="/editar_producto/{{ p.id_producto }}" class="btn-tabla edit">✏️ Editar</a>
+
+    {% if p.id_producto in productos_con_ventas %}
+        <button class="btn-tabla disabled" disabled>🚫 Deshabilitado</button>
+    {% else %}
+        <a href="/eliminar_producto/{{ p.id_producto }}" 
+           class="btn-tabla delete"
+           onclick="return confirm('¿Seguro que deseas eliminar este producto?')">
+           🗑️ Eliminar
+        </a>
+    {% endif %}
+</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+</section>
 
-    <div class="volver">
-        <a href="/">🏠 Volver al inicio</a>
-    </div>
+<div class="volver">
+    <a href="{{ url_for('menu') }}">🏠 Volver al menú</a>
+</div>
+
 </body>
 </html>
-

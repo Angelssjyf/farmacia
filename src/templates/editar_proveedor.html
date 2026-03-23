@@ -10,16 +10,27 @@
         <h1>✏️ Editar Proveedor</h1>
     </header>
 
-    <form action="/actualizar_proveedor/{{ proveedor.id_proveedor }}" method="post">
-        <input type="text" name="nombre" value="{{ proveedor.nombre }}" required>
-        <input type="text" name="telefono" value="{{ proveedor.telefono }}">
-        <input type="email" name="correo" value="{{ proveedor.correo }}">
-        <input type="text" name="direccion" value="{{ proveedor.direccion }}">
+    <form action="{{ url_for('actualizar_proveedor', id=proveedor.id_proveedor) }}" method="post">
+
+
+        <input type="text" name="nombre" 
+               value="{{ proveedor.nombre }}" required>
+
+        <input type="text" name="telefono" 
+               value="{{ proveedor.telefono or '' }}">
+
+        <input type="email" name="correo" 
+               value="{{ proveedor.correo or '' }}">
+
+        <input type="text" name="direccion" 
+               value="{{ proveedor.direccion or '' }}">
+
         <button type="submit">💾 Guardar cambios</button>
     </form>
 
     <div class="volver">
-        <a href="/proveedores">⬅️ Volver a proveedores</a>
+        <a href="{{ url_for('proveedores') }}">⬅️ Volver a proveedores</a>
     </div>
 </body>
 </html>
+

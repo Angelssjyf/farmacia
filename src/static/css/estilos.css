@@ -1,3 +1,4 @@
+/* ======== ESTILOS GENERALES ======== */
 body {
     font-family: "Segoe UI", Arial, sans-serif;
     background-color: #f8faf8;
@@ -6,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #013220; /* verde marino */
+    background-color: #013220;
     color: white;
     padding: 20px;
     text-align: center;
@@ -17,78 +18,98 @@ h1 {
     font-size: 28px;
 }
 
+/* ======== FORMULARIOS ======== */
 form {
-    background-color: #ffffff;
+    background-color: white;
     padding: 20px;
     margin: 20px auto;
     width: 90%;
-    max-width: 800px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width: 850px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
-input[type="text"], 
-input[type="number"], 
-input[type="date"], 
+input[type="text"],
+input[type="number"],
+input[type="date"],
 select {
-    padding: 8px;
-    margin: 8px 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 8px;
+    border: 1px solid #cfd3d3;
+    border-radius: 6px;
     width: 22%;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: all 0.2s ease-in-out;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input:focus, 
+input:focus,
 select:focus {
     outline: none;
     border-color: #00693e;
-    box-shadow: 0 0 4px rgba(0,105,62,0.5);
+    box-shadow: 0 0 6px rgba(0,105,62,0.5);
 }
 
+/* RESPONSIVE PARA FORMULARIOS */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+        width: 100%;
+        margin: 8px 0;
+    }
+}
 
+/* ======== BOTONES ======== */
 button {
     background-color: #00693e;
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 10px 18px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out, transform 0.1s;
 }
 
 button:hover {
     background-color: #00994c;
 }
 
+button:active {
+    transform: scale(0.97);
+}
+
+/* ======== TABLAS ======== */
 table {
     width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
+    max-width: 850px;
+    margin: 25px auto;
     border-collapse: collapse;
     background-color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 th {
     background-color: #00693e;
     color: white;
+    font-weight: 600;
 }
 
 tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f6f6f6;
 }
 
+/* ======== LINKS ======== */
 a {
     text-decoration: none;
     color: #00693e;
@@ -99,49 +120,113 @@ a:hover {
     color: #00994c;
 }
 
-.acciones a {
-    margin: 0 5px;
-}
-
+/* ======== BOTÓN VOLVER ======== */
 .volver {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .volver a {
     color: #013220;
     background-color: #ffd700;
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 10px 15px;
+    border-radius: 6px;
 }
 
 .volver a:hover {
     background-color: #ffcc00;
 }
-/* === LOGIN Y MENÚ PRINCIPAL === */
-.login-box, .menu-box {
+
+/* ======== LOGIN Y MENÚ PRINCIPAL ======== */
+.login-box,
+.menu-box {
     max-width: 400px;
     margin: 80px auto;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.18);
+    padding: 35px;
     text-align: center;
 }
 
-.login-box h2, .menu-box h2 {
-    color: #0a3d62;
-}
-
-.error {
-    color: white;
-    background-color: #c0392b;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 10px;
+.login-box h2,
+.menu-box h2 {
+    color: #013220;
+    font-size: 22px;
+    margin-bottom: 20px;
 }
 
 .menu-box button {
-    width: 80%;
-    margin: 10px 0;
+    width: 85%;
+    margin: 12px 0;
+}
+
+/* ======== ALERTAS DE ERROR ======== */
+.error {
+    color: white;
+    background-color: #c0392b;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+/* ======== ALERTAS VISUALES ======== */
+.alert {
+    padding: 10px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 850px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.success {
+    background: #c8ffc8;
+    color: #0b590b;
+}
+
+.error {
+    background: #ffb8b8;
+    color: #7a0000;
+}
+
+
+/* ALERTAS FLASH (añádelo a estilos.css) */
+.alert {
+    padding: 12px 18px;
+    margin: 12px auto;
+    width: auto;
+    max-width: 850px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* categorías */
+.alert.success {
+    background: #c8ffc8;
+    color: #0b590b;
+}
+.alert.error {
+    background: #ffb8b8;
+    color: #7a0000;
+}
+
+/* cuando se inicia la desaparición */
+.alert.fade-out {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.btn-tabla.disabled {
+    background: #bfbfbf;
+    color: #5a5a5a;
+    cursor: not-allowed;
+    pointer-events: none;
+    border: 2px solid #9e9e9e;
 }

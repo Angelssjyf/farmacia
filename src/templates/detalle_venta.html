@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Venta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>🧾 Detalle de la Venta #{{ venta.id_venta }}</h1>
+</header>
+
+<div class="info-venta">
+    <p><strong>📅 Fecha:</strong> 
+        {{ venta.fecha.strftime("%Y-%m-%d") if venta.fecha else "" }}
+    </p>
+
+    <p><strong>👤 Cliente:</strong> 
+        {{ venta.cliente if venta.cliente else "Sin cliente" }}
+    </p>
+
+    <p><strong>💵 Total de la Venta:</strong> 
+        ${{ "%.2f"|format(venta.total) }}
+    </p>
+
+    <p><strong>🧮 Cantidad de productos:</strong> 
+        {{ detalles|length }}
+    </p>
+</div>
+
+<h2>Productos Vendidos</h2>
+
+<table>
+    <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+    </tr>
+
+    {% if detalles %}
+        {% for d in detalles %}
+        <tr>
+            <td>{{ d.producto }}</td>
+            <td>{{ d.cantidad }}</td>
+            <td>${{ "%.2f"|format(d.precio_unitario) }}</td>
+            <td>${{ "%.2f"|format(d.subtotal) }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="4">No hay productos en esta venta</td>
+        </tr>
+    {% endif %}
+</table>
+
+<div class="volver">
+    <a href="{{ url_for('ventas') }}">⬅ Volver a Ventas</a>
+</div>
+
+</body>
+</html>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Menú principal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-
 </head>
 <body>
     <header>
@@ -15,12 +14,38 @@
         <h2>Bienvenido al Sistema de Farmacia</h2>
         <p>Selecciona una opción:</p>
 
-        <a href="/productos"><button>🧾 Productos</button></a>
-        <a href="/proveedores"><button>🏭 Proveedores</button></a>
-        <a href="/clientes"><button>👥 Clientes</button></a>
-        <a href="/ventas"><button>💰 Ventas</button></a>
+        <div class="menu-botones">
+            <a href="{{ url_for('productos') }}"><button>🧾 Productos</button></a>
+            <a href="{{ url_for('proveedores') }}"><button>🏭 Proveedores</button></a>
+            <a href="#"><button disabled style="background:#ccc; cursor:not-allowed;">👥 Clientes (no disponible)</button></a>
+            <a href="{{ url_for('ventas') }}"><button>💰 Ventas</button></a>
+        </div>
+
         <br><br>
-        <a href="/logout"><button style="background-color:#c0392b;">🚪 Cerrar sesión</button></a>
+
+        <a href="{{ url_for('logout') }}">
+            <button style="background-color:#c0392b;">🚪 Cerrar sesión</button>
+        </a>
     </div>
+
+    <style>
+        /* FIX: Contenedor que acomoda bien los botones */
+        .menu-botones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .menu-botones button {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+    </style>
+
 </body>
 </html>
+

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Inicio - Norte salud nv</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-
 </head>
 <body>
     <header>
@@ -14,7 +13,9 @@
 
     <main style="text-align:center; margin-top: 60px;">
         <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-            <a href="/productos" style="
+
+            <!-- Productos -->
+            <a href="{{ url_for('productos') }}" style="
                 background-color:#00693e;
                 color:white;
                 padding:20px 30px;
@@ -26,7 +27,8 @@
                 💊 Productos
             </a>
 
-            <a href="#" style="
+            <!-- Ventas (ya activado) -->
+            <a href="{{ url_for('ventas') }}" style="
                 background-color:#ffd700;
                 color:#013220;
                 padding:20px 30px;
@@ -35,9 +37,10 @@
                 font-size:18px;
                 box-shadow:0 2px 5px rgba(0,0,0,0.2);
                 transition: background 0.3s;">
-                🧾 Ventas (próximamente)
+                🧾 Ventas
             </a>
 
+            <!-- Clientes (puedo activarlo si quieres) -->
             <a href="#" style="
                 background-color:#ffffff;
                 color:#00693e;
@@ -51,7 +54,8 @@
                 👥 Clientes (próximamente)
             </a>
 
-            <a href="/proveedores" style="
+            <!-- Proveedores -->
+            <a href="{{ url_for('proveedores') }}" style="
                 background-color:#013220;
                 color:white;
                 padding:20px 30px;
