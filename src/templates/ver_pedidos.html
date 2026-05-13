@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos Pendientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>📦 Pedidos de Clientes</h1>
+</header>
+
+<table>
+    <tr>
+        <th>ID Pedido</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acción</th>
+    </tr>
+
+    {% for p in pedidos %}
+    <tr>
+        <td>{{ p.id_pedido }}</td>
+        <td>{{ p.cliente }}</td>
+        <td>{{ p.fecha }}</td>
+        <td>{{ p.estado }}</td>
+
+        <td>
+            {% if p.estado == 'pendiente' %}
+                <a href="/aprobar_pedido/{{ p.id_pedido }}">
+                    ✅ Aprobar
+                </a>
+            {% else %}
+                Procesado
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+<a href="{{ url_for('panel_admin') }}">
+    ⬅ Volver
+</a>
+
+</body>
+</html>

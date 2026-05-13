@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Super Administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>👑 Panel Super Administrador</h1>
+</header>
+
+<div class="menu-box">
+
+    <h2>Bienvenido Super Administrador</h2>
+    <p>Control total del sistema farmacéutico</p>
+
+    <div class="panel-botones">
+        <a href="/productos" class="btn-panel">💊 Gestionar Productos</a>
+
+        <a href="/ventas" class="btn-panel">💰 Gestionar Ventas</a>
+
+        <a href="/proveedores" class="btn-panel">🚚 Gestionar Proveedores</a>
+
+        <a href="/registrar" class="btn-panel">👥 Gestionar Usuarios</a>
+
+        <a href="/vencimientos" class="btn-panel">⏰ Control de Vencimientos</a>
+
+        <a href="/logout" class="btn-panel salir">🚪 Cerrar Sesión</a>
+    </div>
+
+</div>
+
+</body>
+</html>

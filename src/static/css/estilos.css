@@ -50,7 +50,7 @@ select:focus {
     box-shadow: 0 0 6px rgba(0,105,62,0.5);
 }
 
-/* RESPONSIVE PARA FORMULARIOS */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     input[type="text"],
     input[type="number"],
@@ -120,24 +120,28 @@ a:hover {
     color: #00994c;
 }
 
-/* ======== BOTÓN VOLVER ======== */
+/* ======== BOTÓN VOLVER (MEJORADO) ======== */
 .volver {
     text-align: center;
     margin-top: 25px;
 }
 
-.volver a {
-    color: #013220;
-    background-color: #ffd700;
-    padding: 10px 15px;
-    border-radius: 6px;
+.btn-volver {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
 }
 
-.volver a:hover {
-    background-color: #ffcc00;
+.btn-volver:hover {
+    background-color: #2980b9;
 }
 
-/* ======== LOGIN Y MENÚ PRINCIPAL ======== */
+/* ======== LOGIN Y MENÚ ======== */
 .login-box,
 .menu-box {
     max-width: 400px;
@@ -161,44 +165,10 @@ a:hover {
     margin: 12px 0;
 }
 
-/* ======== ALERTAS DE ERROR ======== */
-.error {
-    color: white;
-    background-color: #c0392b;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    text-align: center;
-}
-/* ======== ALERTAS VISUALES ======== */
-.alert {
-    padding: 10px;
-    margin: 10px auto;
-    width: 90%;
-    max-width: 850px;
-    border-radius: 6px;
-    text-align: center;
-    font-weight: bold;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.success {
-    background: #c8ffc8;
-    color: #0b590b;
-}
-
-.error {
-    background: #ffb8b8;
-    color: #7a0000;
-}
-
-
-/* ALERTAS FLASH (añádelo a estilos.css) */
+/* ======== ALERTAS ======== */
 .alert {
     padding: 12px 18px;
     margin: 12px auto;
-    width: auto;
     max-width: 850px;
     border-radius: 8px;
     font-weight: 600;
@@ -207,26 +177,79 @@ a:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
-/* categorías */
 .alert.success {
     background: #c8ffc8;
     color: #0b590b;
 }
+
 .alert.error {
     background: #ffb8b8;
     color: #7a0000;
 }
 
-/* cuando se inicia la desaparición */
 .alert.fade-out {
     opacity: 0;
     transform: translateY(-8px);
 }
 
+/* ======== BOTONES TABLA ======== */
 .btn-tabla.disabled {
     background: #bfbfbf;
     color: #5a5a5a;
     cursor: not-allowed;
     pointer-events: none;
     border: 2px solid #9e9e9e;
+}
+
+/* ======== ESTADOS DE VENCIMIENTO (NUEVO 🔥) ======== */
+.estado {
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.verde {
+    background: #d4edda;
+    color: #155724;
+}
+
+.amarillo {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.rojo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* PANEL DASHBOARD */
+.panel-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-panel {
+    display: block;
+    background: #00693e;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-panel:hover {
+    background: #00994c;
+}
+
+.salir {
+    background: #c0392b;
+}
+
+.salir:hover {
+    background: #e74c3c;
 }

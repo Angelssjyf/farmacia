@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Realizar Pedido</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>🛒 Realizar Pedido</h1>
+</header>
+
+<form action="/guardar_pedido" method="POST">
+
+    <div id="productos-container">
+
+        <div class="producto-item">
+
+            <select name="producto[]" required>
+                <option value="">Seleccione producto</option>
+
+                {% for p in productos %}
+                <option value="{{ p.id_producto }}">
+                    {{ p.nombre }} - ${{ p.precio }} (Stock: {{ p.stock }})
+                </option>
+                {% endfor %}
+            </select>
+
+            <input type="number"
+                   name="cantidad[]"
+                   min="1"
+                   placeholder="Cantidad"
+                   required>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <button type="button" onclick="agregarProducto()">
+        ➕ Agregar otro producto
+    </button>
+
+    <br><br>
+
+    <button type="submit">
+        Enviar Pedido
+    </button>
+
+</form>
+
+<br>
+
+<a href="{{ url_for('panel_cliente') }}" class="btn-volver">
+    ⬅ Volver al panel cliente
+</a>
+
+<script>
+function agregarProducto() {
+    let container = document.getElementById("productos-container");
+
+    let nuevo = container.firstElementChild.cloneNode(true);
+
+    nuevo.querySelector("select").value = "";
+    nuevo.querySelector("input").value = "";
+
+    container.appendChild(nuevo);
+}
+</script>
+
+</body>
+</html>

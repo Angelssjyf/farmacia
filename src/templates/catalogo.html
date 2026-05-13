@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>💊 Catálogo de Productos</h1>
+</header>
+
+<section>
+
+    {% if productos %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock disponible</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for p in productos %}
+            <tr>
+                <td>{{ p.id_producto }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.descripcion }}</td>
+                <td>${{ p.precio }}</td>
+                <td>{{ p.stock }}</td>
+
+                <td>
+                    {% if p.stock > 10 %}
+                        <span class="estado verde">Disponible</span>
+                    {% elif p.stock > 0 %}
+                        <span class="estado amarillo">Pocas unidades</span>
+                    {% else %}
+                        <span class="estado rojo">Agotado</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+        <div class="alert error">
+            No hay productos disponibles actualmente
+        </div>
+    {% endif %}
+
+</section>
+
+<div class="volver">
+    <a href="{{ url_for('panel_cliente') }}" class="btn-volver">
+        ⬅ Volver al panel cliente
+    </a>
+</div>
+
+</body>
+</html>

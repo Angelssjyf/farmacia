@@ -19,7 +19,6 @@
     {% endif %}
 {% endwith %}
 
-
 <section class="form-contenedor">
     <form action="/agregar_producto" method="post" class="form-producto">
 
@@ -27,6 +26,10 @@
         <input type="text" name="descripcion" placeholder="Descripción">
         <input type="number" name="precio" step="0.01" placeholder="Precio" required>
         <input type="number" name="stock" placeholder="Stock" required>
+        <input type="text" name="lote" placeholder="Lote" required>
+
+        <label>Fecha de vencimiento:</label>
+        <input type="date" name="fecha_vencimiento" required>
 
         <select name="proveedor_id" required>
             <option value="">-- Selecciona proveedor --</option>
@@ -43,57 +46,72 @@
     <table>
         <thead>
             <tr>
+                <th>Estado</th>
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Proveedor</th>
+                <th>Lote</th>
+                <th>Vencimiento</th>
                 <th>Acciones</th>
             </tr>
         </thead>
-<script>
-  // busca alertas y hazlas desaparecer tras 2s
-  window.addEventListener('DOMContentLoaded', () => {
-    const mensajes = document.querySelectorAll('.alert');
-    if (!mensajes.length) return;
-
-    // espera 2 segundos y luego les añade clase para animar la salida
-    setTimeout(() => {
-      mensajes.forEach(msg => {
-        msg.classList.add('fade-out');
-        // luego de 900ms (igual o mayor al CSS transition) remueve del DOM
-        setTimeout(() => {
-          if (msg.parentNode) msg.parentNode.removeChild(msg);
-        }, 900);
-      });
-    }, 2000); // 2000 ms = 2 segundos
-  });
-</script>
 
         <tbody>
             {% for p in productos %}
             <tr>
+
+                <!-- ESTADO -->
+                <td>
+                 {% if p.estado == 'disponible' %}
+                  🟢 Disponible
+
+                 {% elif p.estado == 'agotado' %}
+                  🟡 Agotado
+
+                 {% elif p.estado == 'vencido' %}
+                  🔴 Vencido
+
+                 {% else %}
+                  ⚪ Sin estado
+                 {% endif %}
+                </td>
+
                 <td>{{ p.id_producto }}</td>
                 <td>{{ p.nombre }}</td>
                 <td>{{ p.descripcion }}</td>
                 <td>${{ p.precio }}</td>
                 <td>{{ p.stock }}</td>
                 <td>{{ p.proveedor if p.proveedor else 'Sin asignar' }}</td>
+                <td>{{ p.lote }}</td>
+                <td>{{ p.fecha_vencimiento }}</td>
 
+                <!-- ACCIONES -->
                 <td class="acciones">
-    <a href="/editar_producto/{{ p.id_producto }}" class="btn-tabla edit">✏️ Editar</a>
 
-    {% if p.id_producto in productos_con_ventas %}
-        <button class="btn-tabla disabled" disabled>🚫 Deshabilitado</button>
-    {% else %}
-        <a href="/eliminar_producto/{{ p.id_producto }}" 
-           class="btn-tabla delete"
-           onclick="return confirm('¿Seguro que deseas eliminar este producto?')">
-           🗑️ Eliminar
-        </a>
-    {% endif %}
-</td>
+                    <a href="/editar_producto/{{ p.id_producto }}" class="btn-tabla edit">
+                        ✏️ Editar
+                    </a>
+
+                    <!-- BOTÓN ACTIVAR / DESACTIVAR -->
+                    <a href="/cambiar_estado/{{ p.id_producto }}" class="btn-tabla">
+                       {% if p.estado == 'disponible' %}
+                           🚫 Marcar agotado
+                       {% else %}
+                           🔄 Marcar disponible
+                       {% endif %}
+                    </a>
+
+                    <!-- ELIMINAR OPCIONAL -->
+                    <a href="/eliminar_producto/{{ p.id_producto }}" 
+                       class="btn-tabla delete"
+                       onclick="return confirm('¿Seguro que deseas eliminar este producto?')">
+                       🗑️ Eliminar
+                    </a>
+
+                </td>
 
             </tr>
             {% endfor %}
@@ -102,8 +120,25 @@
 </section>
 
 <div class="volver">
-    <a href="{{ url_for('menu') }}">🏠 Volver al menú</a>
+    <a href="{{ url_for('panel_admin') }}" class="btn-volver">
+        ⬅ Volver al panel admin
+    </a>
 </div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const mensajes = document.querySelectorAll('.alert');
+
+    setTimeout(() => {
+        mensajes.forEach(msg => {
+            msg.classList.add('fade-out');
+            setTimeout(() => {
+                msg.remove();
+            }, 900);
+        });
+    }, 2000);
+});
+</script>
 
 </body>
 </html>
