@@ -76,8 +76,10 @@ def panel_cliente():
 
 
 # PANEL ADMIN
+# PANEL ADMIN
 @app.route('/admin')
 def panel_admin():
+
     if 'usuario' not in session:
         return redirect(url_for('login'))
 
@@ -256,6 +258,14 @@ def catalogo():
 
 @app.route("/ventas")
 def ventas():
+    # validar sesión
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    # validar roles permitidos
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -390,30 +400,48 @@ def logout():
 # Mostrar productos
 @app.route('/productos')
 def productos():
+
+    # validar sesión
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    # validar roles permitidos
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
+    # conexión BD
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
+    # obtener productos
     cursor.execute("""
-    SELECT p.id_producto, p.nombre, p.descripcion, 
-           p.precio, p.stock, 
-           p.estado,
-           p.lote,
-           p.fecha_vencimiento,
-           pr.nombre AS proveedor 
-    FROM productos p 
-    LEFT JOIN proveedores pr ON p.proveedor_id = pr.id_proveedor
-""")
+        SELECT p.id_producto, 
+               p.nombre, 
+               p.descripcion, 
+               p.precio, 
+               p.stock,
+               p.estado,
+               p.lote,
+               p.fecha_vencimiento,
+               pr.nombre AS proveedor
+        FROM productos p
+        LEFT JOIN proveedores pr 
+        ON p.proveedor_id = pr.id_proveedor
+    """)
+
     productos = cursor.fetchall()
 
+    # obtener proveedores
     cursor.execute("SELECT * FROM proveedores")
     proveedores = cursor.fetchall()
 
     conexion.close()
 
-    return render_template("productos.html",
-                           productos=productos,
-                           proveedores=proveedores)
-
+    return render_template(
+        "productos.html",
+        productos=productos,
+        proveedores=proveedores
+    )
 
 # Registrar un producto nuevo
 @app.route('/agregar_producto', methods=['POST'])
@@ -579,7 +607,7 @@ def ver_pedidos():
     if 'usuario' not in session:
         return redirect(url_for('login'))
 
-    if session['rol'] != 'admin':
+    if session['rol'] not in ['admin', 'superadmin']:
         return redirect(url_for('login'))
 
     conexion = conectar()
@@ -610,28 +638,45 @@ def ver_pedidos():
 
 
 # Proveedores
-@app.route('/proveedores') #
+
 # Mostrar lista de proveedores
+@app.route('/proveedores')
 def proveedores():
 
-    # Obtener proveedores con conteo de ventas relacionadas
+    # validar sesión
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    # validar roles permitidos
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
+    # conexión BD
     conexion = conectar()
-
     cursor = conexion.cursor(dictionary=True)
-    cursor.execute("""
-    SELECT p.*, 
-           COUNT(v.id_venta) AS ventas_relacionadas
-    FROM proveedores p
-    LEFT JOIN productos prod ON p.id_proveedor = prod.proveedor_id
-    LEFT JOIN detalle_ventas dv ON prod.id_producto = dv.id_producto
-    LEFT JOIN ventas v ON dv.id_venta = v.id_venta
-    GROUP BY p.id_proveedor
-""")
 
-    # Obtener todos los proveedores
+    # obtener proveedores
+    cursor.execute("""
+        SELECT p.*, 
+               COUNT(v.id_venta) AS ventas_relacionadas
+        FROM proveedores p
+        LEFT JOIN productos prod 
+            ON p.id_proveedor = prod.proveedor_id
+        LEFT JOIN detalle_ventas dv 
+            ON prod.id_producto = dv.id_producto
+        LEFT JOIN ventas v 
+            ON dv.id_venta = v.id_venta
+        GROUP BY p.id_proveedor
+    """)
+
     proveedores = cursor.fetchall()
+
     conexion.close()
-    return render_template('proveedores.html', proveedores=proveedores)
+
+    return render_template(
+        'proveedores.html',
+        proveedores=proveedores
+    )
 # Agregar nuevo proveedor
 @app.route('/agregar_proveedor', methods=['POST'])
 def agregar_proveedor():

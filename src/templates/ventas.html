@@ -85,9 +85,21 @@
 </table>
 
 <div class="volver">
-    <a href="{{ url_for('panel_admin') }}" class="btn-volver">
-    ⬅ Volver al panel admin
-</a>
+
+    {% if session['rol'] == 'superadmin' %}
+
+        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
+            ⬅ Volver al panel super admin
+        </a>
+
+    {% elif session['rol'] == 'admin' %}
+
+        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
+            ⬅ Volver al panel admin
+        </a>
+
+    {% endif %}
+
 </div>
 
 <script>

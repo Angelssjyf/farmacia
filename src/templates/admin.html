@@ -1,17 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Panel Administrador</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
+
 <body>
 
-<h1>Panel Administrador</h1>
+<header>
+    <h1>🛠 Panel Administrador</h1>
+</header>
 
-<a href="/productos">Gestionar productos</a>
-<a href="/ventas">Gestionar ventas</a>
-<a href="/proveedores">Gestionar proveedores</a>
-<a href="/ver_pedidos">📦 Ver pedidos clientes</a>
-<a href="/logout">Cerrar sesión</a>
+<div class="menu-box">
+
+    <h2>Opciones del sistema</h2>
+
+    <a href="/productos">
+        <button>📦 Gestionar productos</button>
+    </a>
+
+    <a href="/ventas">
+        <button>💰 Gestionar ventas</button>
+    </a>
+
+    <a href="/proveedores">
+        <button>🚚 Gestionar proveedores</button>
+    </a>
+
+    <a href="/ver_pedidos">
+        <button>📋 Ver pedidos clientes</button>
+    </a>
+
+    <a href="/vencimientos">
+        <button>⚠ Control de vencimientos</button>
+    </a>
+
+    <a href="/logout">
+        <button>🚪 Cerrar sesión</button>
+    </a>
+
+</div>
 
 </body>
 </html>
