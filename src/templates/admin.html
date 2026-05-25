@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel Administrador</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 
 <body>
@@ -17,36 +15,25 @@
 <div class="menu-box">
 
     <h2>Opciones del sistema</h2>
+    <p>Gestión y control del sistema farmacéutico</p>
 
-    <a href="/productos">
-        <button>📦 Gestionar productos</button>
-    </a>
+    <div class="panel-botones">
 
-    <a href="/ventas">
-        <button>💰 Gestionar ventas</button>
-    </a>
+        <a href="/productos" class="btn-panel">📦 Gestionar Productos</a>
 
-    <a href="/proveedores">
-        <button>🚚 Gestionar proveedores</button>
-    </a>
+        <a href="/ventas" class="btn-panel">💰 Gestionar Ventas</a>
 
-    <a href="/ver_pedidos">
-        <button>📋 Ver pedidos clientes</button>
-    </a>
+        <a href="/proveedores" class="btn-panel">🚚 Gestionar Proveedores</a>
 
-    <a href="/vencimientos">
-        <button>⚠ Control de vencimientos</button>
-    </a>
+        <a href="/ver_pedidos" class="btn-panel">📋 Ver Pedidos Clientes</a>
 
-    <a href="/dashboard">
-       <button>📊 Dashboard</button> 
-    </a>
+        <a href="/vencimientos" class="btn-panel">⚠️ Control de Vencimientos</a>
 
-    <a href="/logout">
-        <button>🚪 Cerrar sesión</button>
-    </a>
+        <a href="/dashboard" class="btn-panel">📊 Dashboard</a>
 
-    
+        <a href="/logout" class="btn-panel salir">🚪 Cerrar Sesión</a>
+
+    </div>
 
 </div>
 

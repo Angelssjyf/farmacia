@@ -1,53 +1,145 @@
-/* ======== ESTILOS GENERALES ======== */
-body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background-color: #f8faf8;
+/* ============================================================
+   FARMA PANEL — ESTILOS GLOBALES
+   Compatible con todas las páginas del proyecto
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap');
+
+/* ======== RESET & BASE ======== */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+:root {
+    --green-dark:    #084c2e;
+    --green-main:    #0f6e56;
+    --green-mid:     #1d9e75;
+    --green-light:   #5dcaa5;
+    --green-pale:    #e1f5ee;
+    --green-surface: #f0f8f4;
+
+    --red-main:   #993c1d;
+    --red-bg:     #faece7;
+    --blue-main:  #185fa5;
+    --blue-bg:    #e6f1fb;
+
+    --text-primary:   #0a2218;
+    --text-secondary: #4a6458;
+    --text-muted:     #7a9c8e;
+
+    --surface:    #ffffff;
+    --bg:         #f0f4f2;
+    --border:     rgba(15,110,86,0.13);
+
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  16px;
+    --radius-xl:  20px;
+
+    --shadow-sm:  0 2px 8px  rgba(15,110,86,0.08);
+    --shadow-md:  0 8px 32px rgba(15,110,86,0.12);
+    --shadow-lg:  0 20px 60px rgba(15,110,86,0.16);
+
+    --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* Círculos decorativos de fondo */
+body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    top: -25%; right: -15%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(93,202,165,0.12) 0%, transparent 70%);
+}
+
+body::after {
+    bottom: -20%; left: -15%;
+    width: 450px; height: 450px;
+    background: radial-gradient(circle, rgba(15,110,86,0.07) 0%, transparent 70%);
+}
+
+/* ======== HEADER ======== */
 header {
-    background-color: #013220;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8, 76, 46, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     color: white;
-    padding: 20px;
-    text-align: center;
+    padding: 0 2rem;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(93,202,165,0.2);
+    box-shadow: 0 4px 20px rgba(8,76,46,0.25);
 }
 
 h1 {
-    margin: 0;
-    font-size: 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: white;
 }
 
 /* ======== FORMULARIOS ======== */
 form {
-    background-color: white;
-    padding: 20px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 850px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    background-color: var(--surface);
+    padding: 28px 28px 24px;
+    margin: 28px auto;
+    width: 93%;
+    max-width: 870px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
 }
 
 input[type="text"],
 input[type="number"],
 input[type="date"],
+input[type="password"],
+input[type="email"],
 select {
-    padding: 10px;
-    margin: 10px 8px;
-    border: 1px solid #cfd3d3;
-    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 6px;
+    border: 1.5px solid #d0dbd7;
+    border-radius: var(--radius-sm);
     width: 22%;
-    font-size: 15px;
-    background-color: #ffffff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #fafcfb;
+    color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
 }
 
 input:focus,
 select:focus {
     outline: none;
-    border-color: #00693e;
-    box-shadow: 0 0 6px rgba(0,105,62,0.5);
+    border-color: var(--green-mid);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.15);
 }
 
 /* RESPONSIVE */
@@ -55,136 +147,264 @@ select:focus {
     input[type="text"],
     input[type="number"],
     input[type="date"],
+    input[type="password"],
+    input[type="email"],
     select {
         width: 100%;
-        margin: 8px 0;
+        margin: 6px 0;
     }
 }
 
-/* ======== BOTONES ======== */
+/* ======== BOTONES GENERALES ======== */
 button {
-    background-color: #00693e;
+    background-color: var(--green-main);
     color: white;
     border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.2s ease-in-out, transform 0.1s;
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 button:hover {
-    background-color: #00994c;
+    background-color: var(--green-mid);
+    box-shadow: 0 4px 16px rgba(15,110,86,0.25);
 }
 
 button:active {
     transform: scale(0.97);
+    box-shadow: none;
 }
 
 /* ======== TABLAS ======== */
 table {
-    width: 90%;
-    max-width: 850px;
-    margin: 25px auto;
+    width: 93%;
+    max-width: 870px;
+    margin: 28px auto;
     border-collapse: collapse;
-    background-color: white;
-    border-radius: 10px;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
 }
 
 th, td {
-    padding: 12px;
+    padding: 13px 16px;
     text-align: center;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #edf2ef;
+    font-size: 14px;
 }
 
 th {
-    background-color: #00693e;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-main));
     color: white;
     font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
 }
 
-tr:hover {
-    background-color: #f6f6f6;
+tr:hover td {
+    background-color: var(--green-surface);
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 /* ======== LINKS ======== */
 a {
     text-decoration: none;
-    color: #00693e;
-    font-weight: bold;
+    color: var(--green-main);
+    font-weight: 500;
+    transition: color var(--transition);
 }
 
 a:hover {
-    color: #00994c;
+    color: var(--green-mid);
 }
 
-/* ======== BOTÓN VOLVER (MEJORADO) ======== */
+/* ======== BOTÓN VOLVER ======== */
 .volver {
     text-align: center;
-    margin-top: 25px;
+    margin: 28px 0;
+    position: relative;
+    z-index: 1;
 }
 
 .btn-volver {
-    display: inline-block;
-    background-color: #3498db;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--blue-main);
     color: white;
-    padding: 10px 18px;
-    border-radius: 8px;
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
     text-decoration: none;
     font-weight: 600;
-    transition: 0.2s;
+    font-size: 14px;
+    transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 14px rgba(24,95,165,0.2);
 }
 
 .btn-volver:hover {
-    background-color: #2980b9;
+    background-color: #1470c0;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(24,95,165,0.28);
+}
+
+.btn-volver:active {
+    transform: scale(0.97);
 }
 
 /* ======== LOGIN Y MENÚ ======== */
 .login-box,
 .menu-box {
-    max-width: 400px;
-    margin: 80px auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.18);
-    padding: 35px;
+    max-width: 420px;
+    margin: 72px auto 40px;
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    padding: 40px 36px;
     text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease both;
+}
+
+.login-box::before,
+.menu-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--green-light), var(--green-main));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
 .login-box h2,
 .menu-box h2 {
-    color: #013220;
+    font-family: 'Syne', sans-serif;
+    color: var(--green-dark);
     font-size: 22px;
-    margin-bottom: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.login-box p,
+.menu-box p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
 }
 
 .menu-box button {
-    width: 85%;
-    margin: 12px 0;
+    width: 88%;
+    margin: 8px 0;
+}
+
+/* ======== PANEL DE BOTONES (menú principal) ======== */
+.panel-botones {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--green-pale);
+    color: var(--green-dark);
+    padding: 13px 16px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1.5px solid rgba(15,110,86,0.15);
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-panel:hover {
+    background: var(--green-main);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-panel:active {
+    transform: translateY(-1px);
+}
+
+/* Botón de salir */
+.salir {
+    grid-column: 1 / -1;
+    background: var(--red-bg);
+    color: var(--red-main);
+    border-color: rgba(153,60,29,0.18);
+}
+
+.salir:hover {
+    background: var(--red-main);
+    color: white;
+    border-color: transparent;
+}
+
+/* Si hay una sola columna en móvil */
+@media (max-width: 480px) {
+    .panel-botones {
+        grid-template-columns: 1fr;
+    }
+    .salir {
+        grid-column: 1;
+    }
+    .login-box,
+    .menu-box {
+        margin: 40px 16px;
+        padding: 30px 22px;
+    }
 }
 
 /* ======== ALERTAS ======== */
 .alert {
-    padding: 12px 18px;
-    margin: 12px auto;
-    max-width: 850px;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 13px 20px;
+    margin: 16px auto;
+    max-width: 870px;
+    width: 93%;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 14px;
     text-align: center;
-    transition: opacity 0.8s ease, transform 0.8s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    border-left: 4px solid transparent;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    z-index: 1;
 }
 
 .alert.success {
-    background: #c8ffc8;
-    color: #0b590b;
+    background: #d4f5e4;
+    color: #0a5930;
+    border-left-color: var(--green-mid);
 }
 
 .alert.error {
-    background: #ffb8b8;
-    color: #7a0000;
+    background: #fde8e8;
+    color: #8a1c1c;
+    border-left-color: #e24b4a;
 }
 
 .alert.fade-out {
@@ -192,133 +412,147 @@ a:hover {
     transform: translateY(-8px);
 }
 
-/* ======== BOTONES TABLA ======== */
-.btn-tabla.disabled {
-    background: #bfbfbf;
-    color: #5a5a5a;
-    cursor: not-allowed;
-    pointer-events: none;
-    border: 2px solid #9e9e9e;
+/* ======== BOTONES EN TABLAS ======== */
+.btn-tabla {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition);
 }
 
-/* ======== ESTADOS DE VENCIMIENTO (NUEVO 🔥) ======== */
+.btn-tabla.disabled {
+    background: #e0e0e0;
+    color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+    border: 1.5px solid #ccc;
+}
+
+/* ======== ESTADOS DE VENCIMIENTO ======== */
 .estado {
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-weight: bold;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.3px;
 }
 
 .verde {
-    background: #d4edda;
-    color: #155724;
+    background: #d4f5e4;
+    color: #0a5930;
 }
 
 .amarillo {
     background: #fff3cd;
-    color: #856404;
+    color: #7a5a00;
 }
 
 .rojo {
-    background: #f8d7da;
-    color: #721c24;
+    background: #fde8e8;
+    color: #8a1c1c;
 }
 
-/* PANEL DASHBOARD */
-.panel-botones {
+/* ======== DASHBOARD ======== */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 22px;
+    margin: 36px auto;
+    max-width: 1000px;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-dashboard {
+    background: var(--surface);
+    padding: 28px 20px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    transition: transform var(--transition), box-shadow var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-dashboard::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green-light), var(--green-main));
+}
+
+.card-dashboard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-dashboard h2 {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.card-dashboard p {
+    font-size: 38px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    color: var(--green-main);
+    line-height: 1;
+}
+
+/* Cards simples (usadas en listas/menús) */
+.cards {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 28px;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
-.btn-panel {
-    display: block;
-    background: #00693e;
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.2s;
+.card {
+    background: var(--surface);
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    width: 200px;
+    text-align: center;
+    transition: transform var(--transition);
 }
 
-.btn-panel:hover {
-    background: #00994c;
+.card:hover {
+    transform: translateY(-3px);
 }
 
-.salir {
-    background: #c0392b;
+.card h2 {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.salir:hover {
-    background: #e74c3c;
+.card p {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green-main);
 }
 
-.cards{
-    display:flex;
-    gap:20px;
-    margin-top:30px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
-    width:200px;
-    text-align:center;
-}
-
-.card h2{
-    margin-bottom:10px;
-}
-
-.card p{
-    font-size:30px;
-    font-weight:bold;
-}
-
-.dashboard{
-
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
-    gap:25px;
-
-    margin:40px;
-}
-
-.card-dashboard{
-
-    background:white;
-
-    padding:30px;
-
-    border-radius:15px;
-
-    text-align:center;
-
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-
-    transition:0.3s;
-}
-
-.card-dashboard:hover{
-
-    transform:translateY(-5px);
-}
-
-.card-dashboard h2{
-
-    margin-bottom:15px;
-
-    color:#333;
-}
-
-.card-dashboard p{
-
-    font-size:40px;
-
-    font-weight:bold;
-
-    color:#007bff;
+/* ======== ANIMACIÓN ======== */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
