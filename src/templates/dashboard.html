@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<h1>📊 Dashboard SGV Farma</h1>
+
+<div class="cards">
+
+    <div class="card">
+        <h2>📦 Productos</h2>
+        <p>{{ total_productos }}</p>
+    </div>
+
+    <div class="card">
+        <h2>🔴 Agotados</h2>
+        <p>{{ agotados }}</p>
+    </div>
+
+    <div class="card">
+        <h2>👥 Clientes</h2>
+        <p>{{ clientes }}</p>
+    </div>
+
+    <div class="card">
+        <h2>💰 Ventas</h2>
+        <p>{{ ventas }}</p>
+    </div>
+<div class="volver">
+
+    {% if session['rol'] == 'superadmin' %}
+
+        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
+            ⬅ Volver al panel super admin
+        </a>
+
+    {% elif session['rol'] == 'admin' %}
+
+        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
+            ⬅ Volver al panel admin
+        </a>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
+</div>
+
+</body>
+</html>

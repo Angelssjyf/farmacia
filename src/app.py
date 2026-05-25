@@ -752,6 +752,51 @@ from reportlab.pdfgen import canvas
 from flask import send_file
 import os
 
+@app.route('/dashboard')
+def dashboard():
+
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
+
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    # total productos
+    cursor.execute("SELECT COUNT(*) AS total FROM productos")
+    total_productos = cursor.fetchone()['total']
+
+    # productos agotados
+    cursor.execute("SELECT COUNT(*) AS total FROM productos WHERE stock <= 0")
+    agotados = cursor.fetchone()['total']
+
+    # total clientes
+    cursor.execute("SELECT COUNT(*) AS total FROM clientes")
+    clientes = cursor.fetchone()['total']
+
+    # total ventas
+    cursor.execute("SELECT COUNT(*) AS total FROM ventas")
+    ventas = cursor.fetchone()['total']
+
+    conexion.close()
+
+    return render_template(
+        'dashboard.html',
+        total_productos=total_productos,
+        agotados=agotados,
+        clientes=clientes,
+        ventas=ventas
+    )
+
+
+
+
+
+
+
 @app.route("/factura/<int:id>")
 def generar_factura(id):
     conexion = conectar()
