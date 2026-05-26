@@ -1,91 +1,124 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Proveedores</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>🚚 Gestión de Proveedores</h1>
-</header>
+{% block titulo %}
+Proveedores
+{% endblock %}
+
+{% block encabezado %}
+🚚 Gestión de Proveedores
+{% endblock %}
+
+{% block contenido %}
 
 <section class="form-contenedor">
-    <form action="/agregar_proveedor" method="post" class="form-proveedor">
 
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <input type="text" name="telefono" placeholder="Teléfono">
-    <input type="email" name="correo" placeholder="Correo">
-    <input type="text" name="direccion" placeholder="Dirección">
+    <form action="/agregar_proveedor"
+          method="post"
+          class="form-proveedor">
 
-    <button type="submit" class="btn-agregar">➕ Agregar</button>
-</form>
+        <input type="text"
+               name="nombre"
+               placeholder="Nombre"
+               required>
+
+        <input type="text"
+               name="telefono"
+               placeholder="Teléfono">
+
+        <input type="email"
+               name="correo"
+               placeholder="Correo">
+
+        <input type="text"
+               name="direccion"
+               placeholder="Dirección">
+
+        <button type="submit"
+                class="btn-agregar">
+
+            ➕ Agregar Proveedor
+
+        </button>
+
+    </form>
 
 </section>
 
-<section>
+<section class="tabla-contenedor">
+
     <table>
+
         <thead>
+
             <tr>
+
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Teléfono</th>
                 <th>Correo</th>
                 <th>Dirección</th>
                 <th>Acciones</th>
+
             </tr>
+
         </thead>
 
         <tbody>
-{% for proveedor in proveedores %}
-<tr>
-    <td>{{ proveedor.id_proveedor }}</td>
-    <td>{{ proveedor.nombre }}</td>
-    <td>{{ proveedor.telefono }}</td>
-    <td>{{ proveedor.correo }}</td>
-    <td>{{ proveedor.direccion }}</td>
 
-    <td>
-        <a href="{{ url_for('editar_proveedor', id=proveedor.id_proveedor) }}">✏️ Editar</a>
+            {% for proveedor in proveedores %}
 
-        {% if proveedor.ventas_relacionadas > 0 %}
+            <tr>
 
-            <button disabled style="background:#999; cursor:not-allowed;">
-                🚫 No disponible
-            </button>
-        {% else %}
-            <a href="{{ url_for('eliminar_proveedor', id=proveedor.id_proveedor) }}"
-               onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')"
-               style="background:red; color:white; padding:5px 10px; border-radius:4px;">
-               ❌ Eliminar
-            </a>
-        {% endif %}
-    </td>
-</tr>
-{% endfor %}
-</tbody>
+                <td>{{ proveedor.id_proveedor }}</td>
+
+                <td>{{ proveedor.nombre }}</td>
+
+                <td>{{ proveedor.telefono }}</td>
+
+                <td>{{ proveedor.correo }}</td>
+
+                <td>{{ proveedor.direccion }}</td>
+
+                <td class="acciones">
+
+                    <a href="{{ url_for('editar_proveedor', id=proveedor.id_proveedor) }}"
+                       class="btn-tabla">
+
+                        ✏️ Editar
+
+                    </a>
+
+                    {% if proveedor.ventas_relacionadas > 0 %}
+
+                        <button class="btn-tabla disabled"
+                                disabled>
+
+                            🚫 No disponible
+
+                        </button>
+
+                    {% else %}
+
+                        <a href="{{ url_for('eliminar_proveedor', id=proveedor.id_proveedor) }}"
+                           class="btn-tabla"
+                           onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')">
+
+                            🗑️ Eliminar
+
+                        </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
 
     </table>
+
 </section>
 
-<div class="volver">
-
-    {% if session['rol'] == 'superadmin' %}
-
-        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
-            ⬅ Volver al panel super admin
-        </a>
-
-    {% elif session['rol'] == 'admin' %}
-
-        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
-            ⬅ Volver al panel admin
-        </a>
-
-    {% endif %}
-
-</div>
-
-</body>
-</html>
+{% endblock %}

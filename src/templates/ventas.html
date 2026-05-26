@@ -1,133 +1,223 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Módulo de Ventas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>💰 Módulo de Ventas</h1>
-</header>
+{% block titulo %}
+Ventas
+{% endblock %}
 
-<form action="/agregar_venta" method="post">
+{% block encabezado %}
+💰 Módulo de Ventas
+{% endblock %}
 
-    <label>Fecha:</label>
-    <input type="date" name="fecha" required>
+{% block contenido %}
 
-    <label>Cliente (opcional):</label>
-    <select name="cliente">
-        <option value="">-- Sin cliente --</option>
-        {% for c in clientes %}
-            <option value="{{ c.id_cliente }}">{{ c.nombre }}</option>
-        {% endfor %}
-    </select>
+<section class="form-contenedor">
 
-    <h3>Productos</h3>
+    <form action="/agregar_venta" method="post">
 
-    <div id="productos-container">
-        <div class="producto-item">
+        <input type="date"
+               name="fecha"
+               required>
 
-            <select name="producto[]" required>
-                <option value="">-- Seleccione --</option>
-                {% for p in productos %}
-                    <option value="{{ p.id_producto }}">
-                        {{ p.nombre }} (Stock: {{ p.stock }})
+        <select name="cliente">
+
+            <option value="">
+                -- Cliente opcional --
+            </option>
+
+            {% for c in clientes %}
+
+                <option value="{{ c.id_cliente }}">
+                    {{ c.nombre }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <h3 style="margin-top:20px; margin-bottom:15px;">
+            🛒 Productos de la venta
+        </h3>
+
+        <div id="productos-container">
+
+            <div class="producto-item">
+
+                <select name="producto[]" required>
+
+                    <option value="">
+                        -- Seleccione producto --
                     </option>
-                {% endfor %}
-            </select>
 
-            <input type="number" name="cantidad[]" min="1" placeholder="Cantidad" required>
+                    {% for p in productos %}
+
+                        <option value="{{ p.id_producto }}">
+
+                            {{ p.nombre }}
+                            (Stock: {{ p.stock }})
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <input type="number"
+                       name="cantidad[]"
+                       min="1"
+                       placeholder="Cantidad"
+                       required>
+
+            </div>
 
         </div>
-    </div>
 
-    <button type="button" onclick="agregarProducto()">➕ Agregar otro producto</button>
+        <div style="margin-top:20px;">
 
-    <br><br>
+            <button type="button"
+                    onclick="agregarProducto()">
 
-    <button type="submit">Realizar Venta</button>
+                ➕ Agregar Producto
 
-</form>
+            </button>
 
-<hr>
+            <button type="submit">
 
-<h2>Historial de Ventas</h2>
+                💾 Realizar Venta
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Fecha</th>
-        <th>Cliente</th>
-        <th>Total</th>
-        <th>Acciones</th>
-    </tr>
+            </button>
 
-    {% for v in ventas %}
-    <tr>
-        <td>{{ v.id_venta }}</td>
-        <td>{{ v.fecha.strftime("%Y-%m-%d") if v.fecha else "" }}</td>
-        <td>{{ v.cliente if v.cliente else "Sin cliente" }}</td>
-        <td>${{ "%.2f"|format(v.total) }}</td>
+        </div>
 
-        <td>
-            <a href="{{ url_for('detalle_venta', id=v.id_venta) }}">
-                🔍 Ver detalle
-            </a>
+    </form>
 
-            <a href="/factura/{{ v.id_venta }}" target="_blank">
-                🧾 Factura
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+</section>
 
-<div class="volver">
+<section class="tabla-contenedor">
 
-    {% if session['rol'] == 'superadmin' %}
+    <table>
 
-        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
-            ⬅ Volver al panel super admin
-        </a>
+        <thead>
 
-    {% elif session['rol'] == 'admin' %}
+            <tr>
 
-        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
-            ⬅ Volver al panel admin
-        </a>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Acciones</th>
 
-    {% endif %}
+            </tr>
 
-</div>
+        </thead>
+
+        <tbody>
+
+            {% for v in ventas %}
+
+            <tr>
+
+                <td>{{ v.id_venta }}</td>
+
+                <td>
+                    {{ v.fecha.strftime("%Y-%m-%d") if v.fecha else "" }}
+                </td>
+
+                <td>
+                    {{ v.cliente if v.cliente else "Sin cliente" }}
+                </td>
+
+                <td>
+                    ${{ "%.2f"|format(v.total) }}
+                </td>
+
+                <td class="acciones">
+
+                    <a href="{{ url_for('detalle_venta', id=v.id_venta) }}"
+                       class="btn-tabla">
+
+                        🔍 Ver detalle
+
+                    </a>
+
+                    <a href="/factura/{{ v.id_venta }}"
+                       target="_blank"
+                       class="btn-tabla">
+
+                        🧾 Factura
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</section>
 
 <script>
-// Agregar más productos
+
+// AGREGAR PRODUCTOS
 function agregarProducto() {
+
     let container = document.getElementById("productos-container");
+
     let nuevo = container.firstElementChild.cloneNode(true);
 
     nuevo.querySelector("select").value = "";
+
     nuevo.querySelector("input").value = "";
 
     container.appendChild(nuevo);
 }
 
-// Validación antes de enviar
-document.querySelector("form").addEventListener("submit", function(e) {
+// FORMULARIO AJAX
+document.querySelector("form").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
     let productos = document.querySelectorAll("select[name='producto[]']");
     let cantidades = document.querySelectorAll("input[name='cantidad[]']");
 
     for (let i = 0; i < productos.length; i++) {
+
         if (productos[i].value === "" || cantidades[i].value <= 0) {
+
             alert("Completa todos los productos correctamente");
-            e.preventDefault();
+
             return;
         }
     }
+
+    let formData = new FormData(this);
+
+    let respuesta = await fetch("/agregar_venta", {
+
+        method: "POST",
+        body: formData
+
+    });
+
+    let data = await respuesta.json();
+
+    if(data.success){
+
+        window.open(
+            "/factura/" + data.id_venta,
+            "_blank"
+        );
+
+        window.location.reload();
+    }
+
 });
+
 </script>
 
-</body>
-</html>
+
+
+{% endblock %}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>{% block title %}SGV Farma{% endblock %}</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/estilos.css') }}">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>💊 SGV Farma</h2>
+
+    <a href="/dashboard">
+        <i class="fas fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a href="/productos">
+        <i class="fas fa-pills"></i>
+        Productos
+    </a>
+
+    <a href="/ventas">
+        <i class="fas fa-cash-register"></i>
+        Ventas
+    </a>
+
+    <a href="/proveedores">
+        <i class="fas fa-truck"></i>
+        Proveedores
+    </a>
+
+    <a href="/vencimientos">
+        <i class="fas fa-exclamation-triangle"></i>
+        Vencimientos
+    </a>
+
+    <a href="/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        Cerrar sesión
+    </a>
+
+</div>
+
+<div class="contenido">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

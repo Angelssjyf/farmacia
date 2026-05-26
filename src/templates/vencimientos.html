@@ -1,70 +1,76 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Control de vencimientos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>Control de productos próximos a vencer</h1>
-</header>
+{% block titulo %}
+Vencimientos
+{% endblock %}
 
-<div class="contenedor-tabla">
+{% block encabezado %}
+⏳ Control de Vencimientos
+{% endblock %}
+
+{% block contenido %}
+
+<section class="tabla-contenedor">
 
     <table>
+
         <thead>
+
             <tr>
+
                 <th>Producto</th>
                 <th>Lote</th>
                 <th>Fecha vencimiento</th>
                 <th>Estado</th>
+
             </tr>
+
         </thead>
 
         <tbody>
+
             {% for p in productos %}
+
             <tr>
+
                 <td>{{ p.nombre }}</td>
+
                 <td>{{ p.lote }}</td>
+
                 <td>{{ p.fecha_vencimiento }}</td>
 
                 <td>
+
                     {% if p.estado == 'verde' %}
-                        <span class="estado verde">🟢 Vigente</span>
+
+                        <span class="estado verde">
+                            🟢 Vigente
+                        </span>
 
                     {% elif p.estado == 'amarillo' %}
-                        <span class="estado amarillo">🟡 Próximo a vencer</span>
+
+                        <span class="estado amarillo">
+                            🟡 Próximo a vencer
+                        </span>
 
                     {% else %}
-                        <span class="estado rojo">🔴 Vencido</span>
+
+                        <span class="estado rojo">
+                            🔴 Vencido
+                        </span>
+
                     {% endif %}
+
                 </td>
+
             </tr>
+
             {% endfor %}
+
         </tbody>
+
     </table>
 
-</div>
+</section>
 
-<div class="volver">
-
-    {% if session['rol'] == 'superadmin' %}
-
-        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
-            ⬅ Volver al panel super admin
-        </a>
-
-    {% elif session['rol'] == 'admin' %}
-
-        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
-            ⬅ Volver al panel admin
-        </a>
-
-    {% endif %}
-
-</div>
-
-</body>
-</html>
+{% endblock %}

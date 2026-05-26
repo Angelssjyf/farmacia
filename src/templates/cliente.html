@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Cliente</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout_cliente.html' %}
 
-<header>
-    <h1>🛒 Panel Cliente</h1>
-</header>
+{% block titulo %}
+Panel Cliente
+{% endblock %}
+
+{% block encabezado %}
+🛒 Panel Cliente
+{% endblock %}
+
+{% block contenido %}
 
 <div class="menu-box">
 
     <h2>Bienvenido Cliente</h2>
-    <p>Realiza tus pedidos de medicamentos fácilmente</p>
+
+    <p>
+        Realiza tus pedidos de medicamentos fácilmente
+    </p>
 
     <div class="panel-botones">
 
@@ -26,13 +28,8 @@
             🛒 Realizar pedido
         </a>
 
-        <a href="/logout" class="btn-panel salir">
-            🚪 Cerrar sesión
-        </a>
-
     </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

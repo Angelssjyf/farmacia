@@ -556,3 +556,679 @@ a:hover {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    display:flex;
+    background:#f4f6f9;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+
+    width:260px;
+
+    height:100vh;
+
+    background:#1e293b;
+
+    position:fixed;
+
+    padding-top:20px;
+}
+
+.sidebar h2{
+
+    color:white;
+
+    text-align:center;
+
+    margin-bottom:40px;
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:15px 25px;
+
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+
+    background:#334155;
+}
+
+/* CONTENIDO */
+
+.contenido{
+
+    margin-left:260px;
+
+    padding:30px;
+
+    width:100%;
+}/* ============================================================
+   FARMA PANEL — ESTILOS GLOBALES
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap');
+
+/* ===== RESET ===== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --green-dark:#084c2e;
+    --green-main:#0f6e56;
+    --green-mid:#1d9e75;
+    --green-light:#5dcaa5;
+    --green-pale:#e1f5ee;
+
+    --red-main:#993c1d;
+    --red-bg:#faece7;
+
+    --blue-main:#185fa5;
+
+    --text-primary:#0a2218;
+    --text-secondary:#4a6458;
+    --text-muted:#7a9c8e;
+
+    --surface:#ffffff;
+    --bg:#f0f4f2;
+    --border:rgba(15,110,86,0.13);
+
+    --radius-sm:6px;
+    --radius-md:10px;
+    --radius-lg:16px;
+    --radius-xl:20px;
+
+    --shadow-sm:0 2px 8px rgba(15,110,86,0.08);
+    --shadow-md:0 8px 32px rgba(15,110,86,0.12);
+    --shadow-lg:0 20px 60px rgba(15,110,86,0.16);
+
+    --transition:0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== BODY ===== */
+
+body{
+
+    font-family:'DM Sans', sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text-primary);
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar{
+
+    width:260px;
+
+    height:100vh;
+
+    background:#1e293b;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    padding-top:20px;
+
+    overflow-y:auto;
+
+    z-index:1000;
+
+    box-shadow:4px 0 20px rgba(0,0,0,0.08);
+}
+
+.sidebar h2{
+
+    color:white;
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+    font-family:'Syne', sans-serif;
+
+    font-size:24px;
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:15px 25px;
+
+    transition:0.3s;
+
+    font-weight:500;
+}
+
+.sidebar a:hover{
+
+    background:#334155;
+
+    padding-left:35px;
+}
+
+/* ===== CONTENIDO ===== */
+
+.contenido{
+
+    margin-left:260px;
+
+    padding:30px;
+
+    width:calc(100% - 260px);
+
+    min-height:100vh;
+}
+
+/* ===== HEADER ===== */
+
+header{
+
+    background:linear-gradient(135deg, var(--green-dark), var(--green-main));
+
+    color:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:25px;
+
+    box-shadow:var(--shadow-md);
+}
+
+header h1{
+
+    font-family:'Syne', sans-serif;
+
+    font-size:28px;
+}
+
+/* ===== FORMULARIOS ===== */
+
+form{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:16px;
+
+    box-shadow:var(--shadow-md);
+
+    margin-bottom:30px;
+
+    width:100%;
+}
+
+input,
+select{
+
+    padding:12px;
+
+    border:1px solid #d7e2dc;
+
+    border-radius:8px;
+
+    margin:8px;
+
+    font-size:14px;
+
+    transition:0.3s;
+}
+
+input:focus,
+select:focus{
+
+    outline:none;
+
+    border-color:var(--green-main);
+
+    box-shadow:0 0 0 3px rgba(29,158,117,0.15);
+}
+
+/* ===== BOTONES ===== */
+
+button{
+
+    background:var(--green-main);
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:0.3s;
+}
+
+button:hover{
+
+    background:var(--green-mid);
+
+    transform:translateY(-2px);
+}
+
+/* ===== TABLAS ===== */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-md);
+}
+
+th{
+
+    background:linear-gradient(135deg, var(--green-dark), var(--green-main));
+
+    color:white;
+
+    padding:14px;
+
+    font-size:13px;
+
+    text-transform:uppercase;
+}
+
+td{
+
+    padding:14px;
+
+    text-align:center;
+
+    border-bottom:1px solid #edf2ef;
+}
+
+tr:hover{
+
+    background:#f7fbf9;
+}
+
+/* ===== CARDS ===== */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-top:20px;
+}
+
+.card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow-md);
+
+    transition:0.3s;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.card::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:4px;
+
+    background:linear-gradient(90deg,var(--green-light),var(--green-main));
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+}
+
+.card h2{
+
+    font-size:15px;
+
+    color:var(--text-secondary);
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:36px;
+
+    font-family:'Syne', sans-serif;
+
+    color:var(--green-main);
+}
+
+/* ===== BOTÓN VOLVER ===== */
+
+.volver{
+
+    margin-top:30px;
+
+    text-align:center;
+}
+
+.btn-volver{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:var(--blue-main);
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:0.3s;
+}
+
+.btn-volver:hover{
+
+    background:#1470c0;
+
+    transform:translateY(-2px);
+}
+
+/* ===== ESTADOS ===== */
+
+.estado{
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+.verde{
+
+    background:#d4f5e4;
+
+    color:#0a5930;
+}
+
+.amarillo{
+
+    background:#fff3cd;
+
+    color:#7a5a00;
+}
+
+.rojo{
+
+    background:#fde8e8;
+
+    color:#8a1c1c;
+}
+
+/* ===== LOGIN ===== */
+
+.login-box{
+
+    width:100%;
+
+    max-width:420px;
+
+    margin:60px auto;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    box-shadow:var(--shadow-lg);
+
+    text-align:center;
+}
+
+.login-box h2{
+
+    font-family:'Syne', sans-serif;
+
+    margin-bottom:10px;
+
+    color:var(--green-dark);
+}
+
+.login-box p{
+
+    color:var(--text-muted);
+
+    margin-bottom:20px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:900px){
+
+    .sidebar{
+
+        width:90px;
+    }
+
+    .sidebar h2{
+
+        display:none;
+    }
+
+    .sidebar a{
+
+        justify-content:center;
+
+        padding:18px;
+    }
+
+    .contenido{
+
+        margin-left:90px;
+
+        width:calc(100% - 90px);
+    }
+}
+
+@media(max-width:768px){
+
+    body{
+
+        flex-direction:column;
+    }
+
+    .sidebar{
+
+        position:relative;
+
+        width:100%;
+
+        height:auto;
+
+        display:flex;
+
+        overflow-x:auto;
+    }
+
+    .sidebar a{
+
+        white-space:nowrap;
+    }
+
+    .contenido{
+
+        margin-left:0;
+
+        width:100%;
+    }
+
+    .cards{
+
+        grid-template-columns:1fr;
+    }
+
+    table{
+
+        display:block;
+
+        overflow-x:auto;
+    }
+}
+
+
+/* ===== TOPBAR ===== */
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:white;
+
+    padding:20px 25px;
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow-md);
+
+    margin-bottom:30px;
+}
+
+.topbar h1{
+
+    color:var(--green-dark);
+
+    font-size:28px;
+}
+
+.subtitulo{
+
+    color:var(--text-muted);
+
+    margin-top:5px;
+
+    font-size:14px;
+}
+
+.topbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+}
+
+.reloj{
+
+    background:#f1f5f9;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    color:#1e293b;
+
+    font-size:15px;
+}
+
+.usuario{
+
+    background:linear-gradient(135deg,var(--green-main),var(--green-mid));
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    box-shadow:0 4px 15px rgba(15,110,86,0.25);
+}

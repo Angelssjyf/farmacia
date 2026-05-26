@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        {% block titulo %}
+        SGV FARMA
+        {% endblock %}
+
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilos.css') }}">
+
+</head>
+
+<body>
+
+<div class="cards-dashboard">
+
+    <a href="/catalogo" class="card">
+        <h3>💊 Catálogo</h3>
+        <p>Consultar productos disponibles</p>
+    </a>
+
+    <a href="/pedido_cliente" class="card">
+        <h3>🛒 Nuevo Pedido</h3>
+        <p>Solicitar medicamentos</p>
+    </a>
+
+    <a href="/mis_pedidos" class="card">
+        <h3>📦 Mis Pedidos</h3>
+        <p>Consultar estado de solicitudes</p>
+    </a>
+
+</div>
+
+<div class="contenido">
+
+    <header>
+
+        <h1>
+
+            {% block encabezado %}
+            Panel Cliente
+            {% endblock %}
+
+        </h1>
+
+    </header>
+
+    {% block contenido %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

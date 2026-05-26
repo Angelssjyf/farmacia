@@ -1,51 +1,92 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de productos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>🧾 Lista de productos</h1>
-</header>
+{% block titulo %}
+Productos
+{% endblock %}
+
+{% block encabezado %}
+📦 Gestión de Productos
+{% endblock %}
+
+{% block contenido %}
 
 {% with mensajes = get_flashed_messages(with_categories=True) %}
     {% if mensajes %}
         {% for categoria, mensaje in mensajes %}
-            <div class="alert {{ categoria }}">{{ mensaje }}</div>
+
+            <div class="alert {{ categoria }}">
+                {{ mensaje }}
+            </div>
+
         {% endfor %}
     {% endif %}
 {% endwith %}
 
 <section class="form-contenedor">
+
     <form action="/agregar_producto" method="post" class="form-producto">
 
-        <input type="text" name="nombre" placeholder="Nombre" required>
-        <input type="text" name="descripcion" placeholder="Descripción">
-        <input type="number" name="precio" step="0.01" placeholder="Precio" required>
-        <input type="number" name="stock" placeholder="Stock" required>
-        <input type="text" name="lote" placeholder="Lote" required>
+        <input type="text"
+               name="nombre"
+               placeholder="Nombre"
+               required>
 
-        <label>Fecha de vencimiento:</label>
-        <input type="date" name="fecha_vencimiento" required>
+        <input type="text"
+               name="descripcion"
+               placeholder="Descripción">
+
+        <input type="number"
+               name="precio"
+               step="0.01"
+               placeholder="Precio"
+               required>
+
+        <input type="number"
+               name="stock"
+               placeholder="Stock"
+               required>
+
+        <input type="text"
+               name="lote"
+               placeholder="Lote"
+               required>
+
+        <input type="date"
+               name="fecha_vencimiento"
+               required>
 
         <select name="proveedor_id" required>
-            <option value="">-- Selecciona proveedor --</option>
+
+            <option value="">
+                -- Selecciona proveedor --
+            </option>
+
             {% for prov in proveedores %}
-                <option value="{{ prov.id_proveedor }}">{{ prov.nombre }}</option>
+
+                <option value="{{ prov.id_proveedor }}">
+                    {{ prov.nombre }}
+                </option>
+
             {% endfor %}
+
         </select>
 
-        <button type="submit" class="btn-agregar">➕ Agregar</button>
+        <button type="submit" class="btn-agregar">
+            ➕ Agregar Producto
+        </button>
+
     </form>
+
 </section>
 
-<section>
+<section class="tabla-contenedor">
+
     <table>
+
         <thead>
+
             <tr>
+
                 <th>Estado</th>
                 <th>ID</th>
                 <th>Nombre</th>
@@ -56,101 +97,135 @@
                 <th>Lote</th>
                 <th>Vencimiento</th>
                 <th>Acciones</th>
+
             </tr>
+
         </thead>
 
         <tbody>
+
             {% for p in productos %}
+
             <tr>
 
                 <!-- ESTADO -->
                 <td>
-                 {% if p.estado == 'disponible' %}
-                  🟢 Disponible
 
-                 {% elif p.estado == 'agotado' %}
-                  🟡 Agotado
+                    {% if p.estado == 'disponible' %}
 
-                 {% elif p.estado == 'vencido' %}
-                  🔴 Vencido
+                        <span class="estado verde">
+                            🟢 Disponible
+                        </span>
 
-                 {% else %}
-                  ⚪ Sin estado
-                 {% endif %}
+                    {% elif p.estado == 'agotado' %}
+
+                        <span class="estado amarillo">
+                            🟡 Agotado
+                        </span>
+
+                    {% elif p.estado == 'vencido' %}
+
+                        <span class="estado rojo">
+                            🔴 Vencido
+                        </span>
+
+                    {% else %}
+
+                        <span class="estado">
+                            ⚪ Sin estado
+                        </span>
+
+                    {% endif %}
+
                 </td>
 
                 <td>{{ p.id_producto }}</td>
+
                 <td>{{ p.nombre }}</td>
+
                 <td>{{ p.descripcion }}</td>
+
                 <td>${{ p.precio }}</td>
+
                 <td>{{ p.stock }}</td>
-                <td>{{ p.proveedor if p.proveedor else 'Sin asignar' }}</td>
+
+                <td>
+                    {{ p.proveedor if p.proveedor else 'Sin asignar' }}
+                </td>
+
                 <td>{{ p.lote }}</td>
+
                 <td>{{ p.fecha_vencimiento }}</td>
 
                 <!-- ACCIONES -->
                 <td class="acciones">
 
-                    <a href="/editar_producto/{{ p.id_producto }}" class="btn-tabla edit">
+                    <a href="/editar_producto/{{ p.id_producto }}"
+                       class="btn-tabla">
+
                         ✏️ Editar
+
                     </a>
 
-                    <!-- BOTÓN ACTIVAR / DESACTIVAR -->
-                    <a href="/cambiar_estado/{{ p.id_producto }}" class="btn-tabla">
-                       {% if p.estado == 'disponible' %}
-                           🚫 Marcar agotado
-                       {% else %}
-                           🔄 Marcar disponible
-                       {% endif %}
+                    <a href="/cambiar_estado/{{ p.id_producto }}"
+                       class="btn-tabla">
+
+                        {% if p.estado == 'disponible' %}
+
+                            🚫 Agotar
+
+                        {% else %}
+
+                            🔄 Activar
+
+                        {% endif %}
+
                     </a>
 
-                    <!-- ELIMINAR OPCIONAL -->
-                    <a href="/eliminar_producto/{{ p.id_producto }}" 
-                       class="btn-tabla delete"
+                    <a href="/eliminar_producto/{{ p.id_producto }}"
+                       class="btn-tabla"
                        onclick="return confirm('¿Seguro que deseas eliminar este producto?')">
-                       🗑️ Eliminar
+
+                        🗑️ Eliminar
+
                     </a>
 
                 </td>
 
             </tr>
+
             {% endfor %}
+
         </tbody>
+
     </table>
+
 </section>
 
-<div class="volver">
-
-    {% if session['rol'] == 'superadmin' %}
-
-        <a href="{{ url_for('panel_superadmin') }}" class="btn-volver">
-            ⬅ Volver al panel super admin
-        </a>
-
-    {% elif session['rol'] == 'admin' %}
-
-        <a href="{{ url_for('panel_admin') }}" class="btn-volver">
-            ⬅ Volver al panel admin
-        </a>
-
-    {% endif %}
-
-</div>
-
 <script>
+
 window.addEventListener('DOMContentLoaded', () => {
+
     const mensajes = document.querySelectorAll('.alert');
 
     setTimeout(() => {
+
         mensajes.forEach(msg => {
+
             msg.classList.add('fade-out');
+
             setTimeout(() => {
+
                 msg.remove();
+
             }, 900);
+
         });
+
     }, 2000);
+
 });
+
 </script>
 
-</body>
-</html>
+{% endblock %}

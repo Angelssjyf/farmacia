@@ -1,50 +1,95 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Pedidos Pendientes</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>📦 Pedidos de Clientes</h1>
-</header>
+{% block titulo %}
+Pedidos
+{% endblock %}
 
-<table>
-    <tr>
-        <th>ID Pedido</th>
-        <th>Cliente</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th>Acción</th>
-    </tr>
+{% block encabezado %}
+📦 Pedidos de Clientes
+{% endblock %}
 
-    {% for p in pedidos %}
-    <tr>
-        <td>{{ p.id_pedido }}</td>
-        <td>{{ p.cliente }}</td>
-        <td>{{ p.fecha }}</td>
-        <td>{{ p.estado }}</td>
+{% block contenido %}
 
-        <td>
-            {% if p.estado == 'pendiente' %}
-                <a href="/aprobar_pedido/{{ p.id_pedido }}">
-                    ✅ Aprobar
-                </a>
-            {% else %}
-                Procesado
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<section class="tabla-contenedor">
 
-<br>
+    <table>
 
-<a href="{{ url_for('panel_admin') }}">
-    ⬅ Volver
-</a>
+        <thead>
 
-</body>
-</html>
+            <tr>
+
+                <th>ID Pedido</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acción</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for p in pedidos %}
+
+            <tr>
+
+                <td>{{ p.id_pedido }}</td>
+
+                <td>{{ p.cliente }}</td>
+
+                <td>{{ p.fecha }}</td>
+
+                <td>
+
+                    {% if p.estado == 'pendiente' %}
+
+                        <span class="estado amarillo">
+                            🟡 Pendiente
+                        </span>
+
+                    {% else %}
+
+                        <span class="estado verde">
+                            🟢 Procesado
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td class="acciones">
+
+                    {% if p.estado == 'pendiente' %}
+
+                        <a href="/aprobar_pedido/{{ p.id_pedido }}"
+                           class="btn-tabla">
+
+                            ✅ Aprobar
+
+                        </a>
+
+                    {% else %}
+
+                        <button class="btn-tabla disabled"
+                                disabled>
+
+                            ✔ Procesado
+
+                        </button>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</section>
+
+{% endblock %}

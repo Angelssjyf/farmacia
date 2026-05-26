@@ -86,7 +86,7 @@ def panel_admin():
     if session['rol'] != 'admin':
         return redirect(url_for('login'))
 
-    return render_template('admin.html')
+    return redirect(url_for('dashboard'))
 
 
 # PANEL SUPER ADMIN
@@ -98,25 +98,43 @@ def panel_superadmin():
     if session['rol'] != 'superadmin':
         return redirect(url_for('login'))
 
-    return render_template('superadmin.html')
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/registrar', methods=['GET', 'POST'])
 def registrar():
+
+    # Verificar sesión
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    # Solo superadmin puede registrar usuarios
+    if session['rol'] != 'superadmin':
+        return redirect(url_for('panel_admin'))
+
     if request.method == 'POST':
+
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
         rol = request.form['rol']
 
         conexion = conectar()
         cursor = conexion.cursor()
-        sql = "INSERT INTO usuarios (nombre_usuario, contrasena, rol) VALUES (%s, %s, %s)"
-        valores = (usuario, contrasena, rol)
-        cursor.execute(sql, valores)
+
+        sql = """
+            INSERT INTO usuarios
+            (nombre_usuario, contrasena, rol)
+            VALUES (%s, %s, %s)
+        """
+
+        cursor.execute(sql, (usuario, contrasena, rol))
+
         conexion.commit()
+
+        cursor.close()
         conexion.close()
 
-        return redirect(url_for('login'))
+        return redirect(url_for('panel_superadmin'))
 
     return render_template('registrar.html')
 
@@ -237,6 +255,38 @@ def guardar_pedido():
     conexion.close()
 
     return redirect(url_for('panel_cliente'))
+
+@app.route('/pedidos')
+def pedidos():
+
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            p.id_pedido,
+            u.nombre_usuario AS cliente,
+            p.fecha,
+            p.estado
+        FROM pedidos p
+        LEFT JOIN usuarios u
+        ON p.id_cliente = u.id_usuario
+    """)
+    pedidos = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return render_template(
+        'ver_pedidos.html',
+        pedidos=pedidos
+    )
 
 #catalogo cliente
 @app.route('/catalogo')
@@ -389,7 +439,12 @@ def agregar_venta():
     cursor.close()
     conexion.close()
 
-    return redirect(url_for('generar_factura', id=id_venta))
+    session['ultima_factura'] = id_venta
+
+    return {
+    "success": True,
+    "id_venta": id_venta
+}
 
 @app.route('/logout')
 def logout():
