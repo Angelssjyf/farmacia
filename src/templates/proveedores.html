@@ -10,15 +10,43 @@ Proveedores
 
 {% block contenido %}
 
-<section class="form-contenedor">
+<!-- TARJETA RESUMEN -->
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card proveedores">
+
+        <div class="icono">
+            🚚
+        </div>
+
+        <div class="info">
+
+            <h3>Total Proveedores</h3>
+
+            <p>{{ proveedores|length }}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FORMULARIO -->
+
+<div class="grafica-box">
+
+    <h2>
+        ➕ Registrar Nuevo Proveedor
+    </h2>
 
     <form action="/agregar_proveedor"
           method="post"
-          class="form-proveedor">
+          class="inventario-form">
 
         <input type="text"
                name="nombre"
-               placeholder="Nombre"
+               placeholder="Nombre del proveedor"
                required>
 
         <input type="text"
@@ -27,14 +55,14 @@ Proveedores
 
         <input type="email"
                name="correo"
-               placeholder="Correo">
+               placeholder="Correo electrónico">
 
         <input type="text"
                name="direccion"
                placeholder="Dirección">
 
         <button type="submit"
-                class="btn-agregar">
+                class="btn-enviar">
 
             ➕ Agregar Proveedor
 
@@ -42,9 +70,15 @@ Proveedores
 
     </form>
 
-</section>
+</div>
 
-<section class="tabla-contenedor">
+<!-- TABLA -->
+
+<div class="grafica-box">
+
+    <h2>
+        📋 Lista de Proveedores
+    </h2>
 
     <table>
 
@@ -53,10 +87,15 @@ Proveedores
             <tr>
 
                 <th>ID</th>
+
                 <th>Nombre</th>
+
                 <th>Teléfono</th>
+
                 <th>Correo</th>
+
                 <th>Dirección</th>
+
                 <th>Acciones</th>
 
             </tr>
@@ -69,20 +108,47 @@ Proveedores
 
             <tr>
 
-                <td>{{ proveedor.id_proveedor }}</td>
+                <td>
 
-                <td>{{ proveedor.nombre }}</td>
+                    {{ proveedor.id_proveedor }}
 
-                <td>{{ proveedor.telefono }}</td>
+                </td>
 
-                <td>{{ proveedor.correo }}</td>
+                <td>
 
-                <td>{{ proveedor.direccion }}</td>
+                    {{ proveedor.nombre }}
+
+                </td>
+
+                <td>
+
+                    {{ proveedor.telefono }}
+
+                </td>
+
+                <td>
+
+                    <span class="badge-correo">
+
+                        {{ proveedor.correo }}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    {{ proveedor.direccion }}
+
+                </td>
 
                 <td class="acciones">
 
-                    <a href="{{ url_for('editar_proveedor', id=proveedor.id_proveedor) }}"
-                       class="btn-tabla">
+                    <a href="{{ url_for(
+                        'editar_proveedor',
+                        id=proveedor.id_proveedor
+                    ) }}"
+                    class="btn-tabla">
 
                         ✏️ Editar
 
@@ -99,9 +165,14 @@ Proveedores
 
                     {% else %}
 
-                        <a href="{{ url_for('eliminar_proveedor', id=proveedor.id_proveedor) }}"
-                           class="btn-tabla"
-                           onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')">
+                        <a href="{{ url_for(
+                            'eliminar_proveedor',
+                            id=proveedor.id_proveedor
+                        ) }}"
+                        class="btn-tabla"
+                        onclick="return confirm(
+                        '¿Seguro que deseas eliminar este proveedor?'
+                        )">
 
                             🗑️ Eliminar
 
@@ -119,6 +190,6 @@ Proveedores
 
     </table>
 
-</section>
+</div>
 
 {% endblock %}

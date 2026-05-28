@@ -1,0 +1,105 @@
+{% extends 'layout_cliente.html' %}
+
+{% block titulo %}
+Mis Pedidos
+{% endblock %}
+
+{% block encabezado %}
+📦 Mis Pedidos
+{% endblock %}
+
+{% block contenido %}
+
+<div class="grafica-box">
+
+    <h2>
+        Historial de Pedidos
+    </h2>
+
+    {% if pedidos %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID Pedido</th>
+
+                <th>Fecha</th>
+
+                <th>Estado</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for p in pedidos %}
+
+            <tr>
+
+                <td>
+
+                    #{{ p.id_pedido }}
+
+                </td>
+
+                <td>
+
+                    {{ p.fecha }}
+
+                </td>
+
+                <td>
+
+                    {% if p.estado == 'pendiente' %}
+
+                    <span class="estado amarillo">
+
+                        Pendiente
+
+                    </span>
+
+                    {% elif p.estado == 'procesado' %}
+
+                    <span class="estado verde">
+
+                        Procesado
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="estado rojo">
+
+                        Cancelado
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p class="carrito-vacio">
+
+        No tienes pedidos registrados
+
+    </p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

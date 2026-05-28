@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block titulo %}
-Registrar Usuario
+Gestión de Usuarios
 {% endblock %}
 
 {% block encabezado %}
@@ -10,9 +10,38 @@ Registrar Usuario
 
 {% block contenido %}
 
-<section class="form-contenedor">
+<!-- TARJETA RESUMEN -->
 
-    <form method="POST">
+<div class="dashboard-grid">
+
+    <div class="dashboard-card clientes">
+
+        <div class="icono">
+            👥
+        </div>
+
+        <div class="info">
+
+            <h3>Total Usuarios</h3>
+
+            <p>{{ usuarios|length }}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FORMULARIO -->
+
+<div class="grafica-box">
+
+    <h2>
+        ➕ Registrar Nuevo Usuario
+    </h2>
+
+    <form method="POST"
+          class="inventario-form">
 
         <input type="text"
                name="usuario"
@@ -44,7 +73,8 @@ Registrar Usuario
 
         </select>
 
-        <button type="submit">
+        <button type="submit"
+                class="btn-enviar">
 
             ➕ Registrar Usuario
 
@@ -52,6 +82,111 @@ Registrar Usuario
 
     </form>
 
-</section>
+</div>
+
+<!-- TABLA USUARIOS -->
+
+<div class="grafica-box">
+
+    <h2>
+        📋 Lista de Usuarios
+    </h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Usuario</th>
+                
+                <th>Contraseña</th>
+
+                <th>Rol</th>
+
+                
+
+                <th>Estado</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for u in usuarios %}
+
+            <tr>
+
+                <td>
+
+                    {{ u.id_usuario }}
+
+                </td>
+
+                <td>
+
+                    {{ u.nombre_usuario }}
+
+                </td>
+
+
+                <td>
+
+                    {{ u.contrasena }}
+
+                </td>
+
+                <td>
+
+                    {% if u.rol == 'superadmin' %}
+
+                        <span class="badge-superadmin">
+
+                            👑 SuperAdmin
+
+                        </span>
+
+                    {% elif u.rol == 'admin' %}
+
+                        <span class="badge-admin">
+
+                            🛠 Admin
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge-cliente">
+
+                            👤 Cliente
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <span class="estado verde">
+
+                        Activo
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
 
 {% endblock %}

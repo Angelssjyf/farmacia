@@ -1,36 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar proveedor</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
-    <header>
-        <h1>✏️ Editar Proveedor</h1>
-    </header>
+{% extends 'layout.html' %}
 
-    <form action="{{ url_for('actualizar_proveedor', id=proveedor.id_proveedor) }}" method="post">
+{% block titulo %}
+Editar Proveedor
+{% endblock %}
 
+{% block encabezado %}
+✏️ Editar Proveedor
+{% endblock %}
 
-        <input type="text" name="nombre" 
-               value="{{ proveedor.nombre }}" required>
+{% block contenido %}
 
-        <input type="text" name="telefono" 
-               value="{{ proveedor.telefono or '' }}">
+<div class="grafica-box">
 
-        <input type="email" name="correo" 
-               value="{{ proveedor.correo or '' }}">
+    <h2>
+        Actualizar información del proveedor
+    </h2>
 
-        <input type="text" name="direccion" 
-               value="{{ proveedor.direccion or '' }}">
+    <form action="{{ url_for(
+        'actualizar_proveedor',
+        id=proveedor.id_proveedor
+    ) }}"
+    method="POST"
+    class="inventario-form">
 
-        <button type="submit">💾 Guardar cambios</button>
+        <input type="text"
+               name="nombre"
+               value="{{ proveedor.nombre }}"
+               placeholder="Nombre del proveedor"
+               required>
+
+        <input type="text"
+               name="telefono"
+               value="{{ proveedor.telefono or '' }}"
+               placeholder="Teléfono">
+
+        <input type="email"
+               name="correo"
+               value="{{ proveedor.correo or '' }}"
+               placeholder="Correo electrónico">
+
+        <input type="text"
+               name="direccion"
+               value="{{ proveedor.direccion or '' }}"
+               placeholder="Dirección">
+
+        <button type="submit"
+                class="btn-enviar">
+
+            💾 Guardar Cambios
+
+        </button>
+
     </form>
 
-    <div class="volver">
-        <a href="{{ url_for('proveedores') }}">⬅️ Volver a proveedores</a>
-    </div>
-</body>
-</html>
+    <div class="volver-box">
 
+        <a href="{{ url_for('proveedores') }}"
+           class="btn-volver">
+
+            ⬅ Volver a proveedores
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

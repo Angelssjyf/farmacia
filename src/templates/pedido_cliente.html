@@ -10,82 +10,385 @@ Realizar Pedido
 
 {% block contenido %}
 
-<div class="grafica-box">
+<div class="buscador-box">
 
-    <h2>Nuevo Pedido</h2>
+    <input type="text"
+           id="buscador"
+           placeholder="🔍 Buscar medicamento...">
 
-    <form action="/guardar_pedido"
-          method="POST"
-          class="inventario-form">
+</div>
 
-        <div id="productos-container">
+<form action="/guardar_pedido"
+      method="POST"
+      id="formPedido">
 
-            <div class="producto-item">
+    <div class="catalogo-main">
 
-                <select name="producto[]" required>
+        <div class="catalogo-grid"
+             id="catalogoGrid">
 
-                    <option value="">
-                        Seleccione producto
-                    </option>
+            {% for p in productos %}
 
-                    {% for p in productos %}
+            <div class="producto-card producto-item">
 
-                    <option value="{{ p.id_producto }}">
+                <div class="producto-img">
 
+                    {% if p.imagen %}
+
+                    <img src="{{ url_for(
+                        'static',
+                        filename='img/productos/' + p.imagen
+                    ) }}"
+                    alt="{{ p.nombre }}">
+
+                    {% else %}
+
+                    <div class="sin-imagen">
+                        💊
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="producto-info">
+
+                    <h3 class="nombre-producto">
                         {{ p.nombre }}
-                        -
-                        ${{ p.precio }}
-                        (Stock: {{ p.stock }})
+                    </h3>
 
-                    </option>
+                    <p class="producto-desc">
+                        {{ p.descripcion }}
+                    </p>
 
-                    {% endfor %}
+                    <div class="producto-footer">
 
-                </select>
+                        <span class="producto-precio">
+                            ${{ p.precio }}
+                        </span>
 
-                <input type="number"
-                       name="cantidad[]"
-                       min="1"
-                       placeholder="Cantidad"
-                       required>
+                        {% if p.stock > 10 %}
+
+                        <span class="estado verde">
+                            Disponible
+                        </span>
+
+                        {% elif p.stock > 0 %}
+
+                        <span class="estado amarillo">
+                            Pocas unidades
+                        </span>
+
+                        {% else %}
+
+                        <span class="estado rojo">
+                            Agotado
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="cantidad-box">
+
+                        <input type="number"
+                               min="1"
+                               value="1"
+                               id="cantidad{{ p.id_producto }}"
+                               class="cantidad-input-producto">
+
+                    </div>
+
+                    <button type="button"
+                            class="btn-agregar"
+                            onclick="agregarCarrito(
+                                '{{ p.id_producto }}',
+                                '{{ p.nombre }}',
+                                '{{ p.precio }}'
+                            )">
+
+                        🛒 Agregar
+
+                    </button>
+
+                </div>
 
             </div>
 
+            {% endfor %}
+
         </div>
 
-        <button type="button"
-                onclick="agregarProducto()">
+    </div>
 
-            ➕ Agregar producto
+    <!-- CARRITO -->
+
+    <div class="carrito-box">
+
+        <h2>
+            🛒 Carrito de Compras
+        </h2>
+
+        <div id="listaCarrito">
+
+            <p class="carrito-vacio">
+                No hay productos agregados
+            </p>
+
+        </div>
+
+        <div class="total-carrito">
+
+            <h3>
+
+                Total:
+                <span id="totalGeneral">
+                    $0
+                </span>
+
+            </h3>
+
+        </div>
+
+        <button type="submit"
+                class="btn-enviar">
+
+            ✅ Realizar Pedido
 
         </button>
 
-        <button type="submit">
+    </div>
 
-            ✅ Enviar Pedido
+</form>
+<div id="toast" class="toast">
 
-        </button>
-
-    </form>
+    ✅ Producto agregado al carrito
 
 </div>
 
 <script>
 
-function agregarProducto() {
+let carrito = [];
 
-    let container =
-        document.getElementById("productos-container");
+function mostrarToast(){
 
-    let nuevo =
-        container.firstElementChild.cloneNode(true);
+    let toast =
+        document.getElementById('toast');
 
-    nuevo.querySelector("select").value = "";
+    toast.classList.add('show');
 
-    nuevo.querySelector("input").value = "";
+    setTimeout(()=>{
 
-    container.appendChild(nuevo);
+        toast.classList.remove('show');
+
+    },2000);
 }
+
+function agregarCarrito(id,nombre,precio){
+
+    let cantidad = parseInt(
+        document.getElementById(
+            'cantidad' + id
+        ).value
+    );
+
+    let existente = carrito.find(
+        item => item.id == id
+    );
+
+    if(existente){
+
+        existente.cantidad += cantidad;
+
+    }else{
+
+        carrito.push({
+
+            id:id,
+            nombre:nombre,
+            precio:parseFloat(precio),
+            cantidad:cantidad
+
+        });
+    }
+
+    renderCarrito();
+    mostrarToast();
+}
+
+function eliminarProducto(index){
+
+    carrito.splice(index,1);
+
+    renderCarrito();
+}
+
+function renderCarrito(){
+
+    let lista =
+        document.getElementById(
+            'listaCarrito'
+        );
+
+    lista.innerHTML = '';
+
+    let total = 0;
+
+    let totalProductos = 0;
+
+    carrito.forEach((item,index)=>{
+
+        total += item.precio * item.cantidad;
+
+        totalProductos += item.cantidad;
+
+        lista.innerHTML += `
+
+        <div class="carrito-item"
+             data-precio="${item.precio}">
+
+            <div class="carrito-info">
+
+                <h4>${item.nombre}</h4>
+
+                <p>
+                    Cantidad:
+                    ${item.cantidad}
+                </p>
+
+                <p>
+                    $${item.precio * item.cantidad}
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="btn-eliminar"
+                    onclick="eliminarProducto(${index})">
+
+                ❌
+
+            </button>
+
+            <input type="hidden"
+                   name="producto[]"
+                   value="${item.id}">
+
+            <input type="hidden"
+                   name="cantidad[]"
+                   value="${item.cantidad}">
+
+        </div>
+
+        `;
+    });
+
+    if(carrito.length == 0){
+
+        lista.innerHTML = `
+
+        <p class="carrito-vacio">
+
+            No hay productos agregados
+
+        </p>
+
+        `;
+
+    }else{
+
+        lista.innerHTML += `
+
+        <div class="total-carrito">
+
+            <h3>
+
+                Productos:
+                ${totalProductos}
+
+            </h3>
+
+            <h2>
+
+                Total:
+                $${total}
+
+            </h2>
+
+        </div>
+
+        `;
+    }
+
+    actualizarTotal();
+}
+
+function actualizarTotal(){
+
+    let total = 0;
+
+    let items =
+        document.querySelectorAll(
+            '.carrito-item'
+        );
+
+    items.forEach(item => {
+
+        let precio =
+            parseFloat(
+                item.dataset.precio
+            );
+
+        let textoCantidad =
+            item.querySelector(
+                '.carrito-info p'
+            ).innerText;
+
+        let cantidad =
+            parseInt(
+                textoCantidad.replace(
+                    'Cantidad: ',
+                    ''
+                )
+            );
+
+        total += precio * cantidad;
+    });
+
+    document.getElementById(
+        'totalGeneral'
+    ).innerText =
+        '$' + total.toLocaleString();
+}
+
+document.getElementById('buscador')
+.addEventListener('keyup',function(){
+
+    let texto =
+        this.value.toLowerCase();
+
+    let productos =
+        document.querySelectorAll(
+            '.producto-item'
+        );
+
+    productos.forEach(producto=>{
+
+        let nombre =
+            producto.querySelector(
+                '.nombre-producto'
+            ).textContent.toLowerCase();
+
+        if(nombre.includes(texto)){
+
+            producto.style.display='block';
+
+        }else{
+
+            producto.style.display='none';
+        }
+    });
+});
 
 </script>
 

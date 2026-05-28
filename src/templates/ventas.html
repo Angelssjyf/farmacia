@@ -10,9 +10,39 @@ Ventas
 
 {% block contenido %}
 
-<section class="form-contenedor">
+<!-- TARJETAS -->
 
-    <form action="/agregar_venta" method="post">
+<div class="dashboard-grid">
+
+    <div class="dashboard-card ventas">
+
+        <div class="icono">
+            💰
+        </div>
+
+        <div class="info">
+
+            <h3>Total Ventas</h3>
+
+            <p>{{ ventas|length }}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FORMULARIO -->
+
+<div class="grafica-box">
+
+    <h2>
+        🛒 Registrar Nueva Venta
+    </h2>
+
+    <form action="/agregar_venta"
+          method="POST"
+          class="inventario-form">
 
         <input type="date"
                name="fecha"
@@ -26,23 +56,24 @@ Ventas
 
             {% for c in clientes %}
 
-                <option value="{{ c.id_cliente }}">
-                    {{ c.nombre }}
-                </option>
+            <option value="{{ c.id_cliente }}">
+
+                {{ c.nombre }}
+
+            </option>
 
             {% endfor %}
 
         </select>
 
-        <h3 style="margin-top:20px; margin-bottom:15px;">
-            🛒 Productos de la venta
-        </h3>
+        
 
         <div id="productos-container">
 
-            <div class="producto-item">
+            <div class="venta-producto-item">
 
-                <select name="producto[]" required>
+                <select name="producto[]"
+                        required>
 
                     <option value="">
                         -- Seleccione producto --
@@ -50,12 +81,12 @@ Ventas
 
                     {% for p in productos %}
 
-                        <option value="{{ p.id_producto }}">
+                    <option value="{{ p.id_producto }}">
 
-                            {{ p.nombre }}
-                            (Stock: {{ p.stock }})
+                        {{ p.nombre }}
+                        (Stock: {{ p.stock }})
 
-                        </option>
+                    </option>
 
                     {% endfor %}
 
@@ -71,7 +102,7 @@ Ventas
 
         </div>
 
-        <div style="margin-top:20px;">
+        <div class="botones-venta">
 
             <button type="button"
                     onclick="agregarProducto()">
@@ -80,7 +111,8 @@ Ventas
 
             </button>
 
-            <button type="submit">
+            <button type="submit"
+                    class="btn-enviar">
 
                 💾 Realizar Venta
 
@@ -90,9 +122,15 @@ Ventas
 
     </form>
 
-</section>
+</div>
 
-<section class="tabla-contenedor">
+<!-- TABLA -->
+
+<div class="grafica-box">
+
+    <h2>
+        📋 Historial de Ventas
+    </h2>
 
     <table>
 
@@ -101,9 +139,15 @@ Ventas
             <tr>
 
                 <th>ID</th>
+
                 <th>Fecha</th>
+
                 <th>Cliente</th>
+
                 <th>Total</th>
+
+                <th>Estado</th>
+
                 <th>Acciones</th>
 
             </tr>
@@ -116,24 +160,50 @@ Ventas
 
             <tr>
 
-                <td>{{ v.id_venta }}</td>
-
                 <td>
-                    {{ v.fecha.strftime("%Y-%m-%d") if v.fecha else "" }}
+
+                    {{ v.id_venta }}
+
                 </td>
 
                 <td>
-                    {{ v.cliente if v.cliente else "Sin cliente" }}
+
+                    {{ v.fecha.strftime("%Y-%m-%d")
+                    if v.fecha else "" }}
+
                 </td>
 
                 <td>
+
+                    {{ v.cliente
+                    if v.cliente
+                    else "Sin cliente" }}
+
+                </td>
+
+                <td>
+
                     ${{ "%.2f"|format(v.total) }}
+
+                </td>
+
+                <td>
+
+                    <span class="estado verde">
+
+                        Completada
+
+                    </span>
+
                 </td>
 
                 <td class="acciones">
 
-                    <a href="{{ url_for('detalle_venta', id=v.id_venta) }}"
-                       class="btn-tabla">
+                    <a href="{{ url_for(
+                        'detalle_venta',
+                        id=v.id_venta
+                    ) }}"
+                    class="btn-tabla">
 
                         🔍 Ver detalle
 
@@ -157,16 +227,22 @@ Ventas
 
     </table>
 
-</section>
+</div>
+
+<!-- SCRIPT -->
 
 <script>
 
-// AGREGAR PRODUCTOS
-function agregarProducto() {
+function agregarProducto(){
 
-    let container = document.getElementById("productos-container");
+    let container =
+        document.getElementById(
+            "productos-container"
+        );
 
-    let nuevo = container.firstElementChild.cloneNode(true);
+    let nuevo =
+        container.firstElementChild
+        .cloneNode(true);
 
     nuevo.querySelector("select").value = "";
 
@@ -175,34 +251,53 @@ function agregarProducto() {
     container.appendChild(nuevo);
 }
 
-// FORMULARIO AJAX
-document.querySelector("form").addEventListener("submit", async function(e) {
+document.querySelector("form")
+.addEventListener("submit",
+async function(e){
 
     e.preventDefault();
 
-    let productos = document.querySelectorAll("select[name='producto[]']");
-    let cantidades = document.querySelectorAll("input[name='cantidad[]']");
+    let productos =
+        document.querySelectorAll(
+            "select[name='producto[]']"
+        );
 
-    for (let i = 0; i < productos.length; i++) {
+    let cantidades =
+        document.querySelectorAll(
+            "input[name='cantidad[]']"
+        );
 
-        if (productos[i].value === "" || cantidades[i].value <= 0) {
+    for(let i = 0;
+        i < productos.length;
+        i++){
 
-            alert("Completa todos los productos correctamente");
+        if(
+            productos[i].value === ""
+            ||
+            cantidades[i].value <= 0
+        ){
+
+            alert(
+                "Completa todos los productos correctamente"
+            );
 
             return;
         }
     }
 
-    let formData = new FormData(this);
+    let formData =
+        new FormData(this);
 
-    let respuesta = await fetch("/agregar_venta", {
+    let respuesta =
+        await fetch("/agregar_venta",{
 
-        method: "POST",
-        body: formData
+            method:"POST",
 
-    });
+            body:formData
+        });
 
-    let data = await respuesta.json();
+    let data =
+        await respuesta.json();
 
     if(data.success){
 
@@ -213,11 +308,8 @@ document.querySelector("form").addEventListener("submit", async function(e) {
 
         window.location.reload();
     }
-
 });
 
 </script>
-
-
 
 {% endblock %}

@@ -5,6 +5,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 app = Flask(__name__)
 app.secret_key = "clave_secreta_segura"
 
@@ -129,18 +134,19 @@ def registrar():
     if 'usuario' not in session:
         return redirect(url_for('login'))
 
-    # Solo superadmin puede registrar usuarios
+    # Solo superadmin
     if session['rol'] != 'superadmin':
         return redirect(url_for('panel_admin'))
 
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    # REGISTRAR USUARIO
     if request.method == 'POST':
 
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
         rol = request.form['rol']
-
-        conexion = conectar()
-        cursor = conexion.cursor()
 
         sql = """
             INSERT INTO usuarios
@@ -148,16 +154,37 @@ def registrar():
             VALUES (%s, %s, %s)
         """
 
-        cursor.execute(sql, (usuario, contrasena, rol))
+        cursor.execute(sql, (
+            usuario,
+            contrasena,
+            rol
+        ))
 
         conexion.commit()
 
-        cursor.close()
-        conexion.close()
+    # CONSULTAR USUARIOS
+    cursor.execute("""
 
-        return redirect(url_for('panel_superadmin'))
+        SELECT
+            id_usuario,
+            nombre_usuario,
+            rol,
+            contrasena
+        FROM usuarios
 
-    return render_template('registrar.html')
+    """)
+
+    usuarios = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return render_template(
+        'registrar.html',
+        usuarios=usuarios
+    )
+
+
 
 
 @app.route('/menu')
@@ -212,7 +239,7 @@ def pedido_cliente():
 
     # Mostrar solo productos con stock disponible
     cursor.execute("""
-        SELECT id_producto, nombre, precio, stock
+        SELECT id_producto, nombre, precio, stock, imagen
         FROM productos
         WHERE stock > 0
     """)
@@ -308,6 +335,58 @@ def pedidos():
 
     return render_template(
         'ver_pedidos.html',
+        pedidos=pedidos
+    )
+
+
+@app.route('/mis_pedidos')
+def mis_pedidos():
+
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    if session['rol'] != 'cliente':
+        return redirect(url_for('login'))
+
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute("""
+
+        SELECT id_cliente
+        FROM clientes
+        WHERE nombre = %s
+
+    """,(session['usuario'],))
+
+    cliente = cursor.fetchone()
+
+    if not cliente:
+
+        conexion.close()
+
+        return "Cliente no encontrado"
+
+    id_cliente = cliente['id_cliente']
+
+    cursor.execute("""
+
+        SELECT
+            id_pedido,
+            estado,
+            fecha
+        FROM pedidos
+        WHERE id_cliente = %s
+        ORDER BY fecha DESC
+
+    """,(id_cliente,))
+
+    pedidos = cursor.fetchall()
+
+    conexion.close()
+
+    return render_template(
+        'mis_pedidos.html',
         pedidos=pedidos
     )
 
@@ -1080,62 +1159,337 @@ def dashboard():
 
 @app.route("/factura/<int:id>")
 def generar_factura(id):
+
+    # =========================
+    # CONEXION
+    # =========================
+
     conexion = conectar()
+
     cursor = conexion.cursor(dictionary=True)
 
-    # Obtener venta
+    # =========================
+    # OBTENER VENTA
+    # =========================
+
     cursor.execute("""
-        SELECT v.id_venta, v.fecha, v.total,
+
+        SELECT v.id_venta,
+               v.fecha,
+               v.total,
                c.nombre AS cliente
+
         FROM ventas v
-        LEFT JOIN clientes c ON v.id_cliente = c.id_cliente
+
+        LEFT JOIN clientes c
+        ON v.id_cliente = c.id_cliente
+
         WHERE v.id_venta = %s
+
     """, (id,))
+
     venta = cursor.fetchone()
 
-    # Obtener detalles
+    # =========================
+    # OBTENER DETALLES
+    # =========================
+
     cursor.execute("""
+
         SELECT p.nombre AS producto,
                d.cantidad,
                d.precio_unitario,
                d.subtotal
+
         FROM detalle_ventas d
-        JOIN productos p ON d.id_producto = p.id_producto
+
+        JOIN productos p
+        ON d.id_producto = p.id_producto
+
         WHERE d.id_venta = %s
+
     """, (id,))
+
     detalles = cursor.fetchall()
 
     conexion.close()
-   #funcion para generar factura en PDF usando ReportLab
-    # Crear PDF
+
+    # =========================
+    # CREAR PDF
+    # =========================
+
     nombre_archivo = f"factura_{id}.pdf"
-    ruta = os.path.join("static", nombre_archivo)
 
-    c = canvas.Canvas(ruta, pagesize=letter)
+    ruta = os.path.join(
+        "static",
+        nombre_archivo
+    )
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, 750, "FACTURA DE VENTA")
+    c = canvas.Canvas(
+        ruta,
+        pagesize=letter
+    )
 
-    c.setFont("Helvetica", 10)
-    c.drawString(50, 730, f"ID Venta: {venta['id_venta']}")
-    c.drawString(50, 715, f"Fecha: {venta['fecha']}")
-    c.drawString(50, 700, f"Cliente: {venta['cliente'] if venta['cliente'] else 'Consumidor final'}")
+    width, height = letter
 
-    y = 670
+    # =========================
+    # ENCABEZADO
+    # =========================
+
+    c.setFillColor(
+        colors.HexColor("#0f172a")
+    )
+
+    c.rect(
+        0,
+        730,
+        width,
+        70,
+        fill=1
+    )
+
+    c.setFillColor(colors.white)
+
+    c.setFont(
+        "Helvetica-Bold",
+        22
+    )
+
+    c.drawString(
+        40,
+        760,
+        "SGV FARMA"
+    )
+
+    c.setFont(
+        "Helvetica",
+        11
+    )
+
+    c.drawString(
+        40,
+        742,
+        "Sistema de Gestión Farmacéutica"
+    )
+
+    # =========================
+    # TITULO
+    # =========================
+
+    c.setFillColor(colors.black)
+
+    c.setFont(
+        "Helvetica-Bold",
+        18
+    )
+
+    c.drawString(
+        40,
+        700,
+        "FACTURA DE VENTA"
+    )
+
+    # =========================
+    # DATOS FACTURA
+    # =========================
+
+    c.setFont(
+        "Helvetica",
+        11
+    )
+
+    c.drawString(
+        40,
+        670,
+        f"Factura N°: {venta['id_venta']}"
+    )
+
+    c.drawString(
+        40,
+        650,
+        f"Fecha: {venta['fecha']}"
+    )
+
+    cliente = (
+        venta['cliente']
+        if venta['cliente']
+        else 'Consumidor Final'
+    )
+
+    c.drawString(
+        40,
+        630,
+        f"Cliente: {cliente}"
+    )
+
+    # =========================
+    # TABLA
+    # =========================
+
+    data = [[
+
+        "Producto",
+        "Cantidad",
+        "Precio",
+        "Subtotal"
+
+    ]]
+
     for d in detalles:
-        c.drawString(50, y, d['producto'])
-        c.drawString(250, y, str(d['cantidad']))
-        c.drawString(300, y, f"${d['precio_unitario']}")
-        c.drawString(380, y, f"${d['subtotal']}")
-        y -= 20
 
-    y -= 20
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, f"TOTAL: ${venta['total']}")
+        data.append([
+
+            d['producto'],
+
+            str(d['cantidad']),
+
+            f"${d['precio_unitario']}",
+
+            f"${d['subtotal']}"
+
+        ])
+
+    tabla = Table(
+
+        data,
+
+        colWidths=[
+            220,
+            80,
+            100,
+            100
+        ]
+
+    )
+
+    tabla.setStyle(TableStyle([
+
+        (
+            'BACKGROUND',
+            (0,0),
+            (-1,0),
+            colors.HexColor("#16a34a")
+        ),
+
+        (
+            'TEXTCOLOR',
+            (0,0),
+            (-1,0),
+            colors.white
+        ),
+
+        (
+            'FONTNAME',
+            (0,0),
+            (-1,0),
+            'Helvetica-Bold'
+        ),
+
+        (
+            'FONTSIZE',
+            (0,0),
+            (-1,-1),
+            10
+        ),
+
+        (
+            'BOTTOMPADDING',
+            (0,0),
+            (-1,0),
+            12
+        ),
+
+        (
+            'GRID',
+            (0,0),
+            (-1,-1),
+            1,
+            colors.grey
+        ),
+
+        (
+            'BACKGROUND',
+            (0,1),
+            (-1,-1),
+            colors.whitesmoke
+        )
+
+    ]))
+
+    tabla.wrapOn(
+        c,
+        width,
+        height
+    )
+
+    tabla.drawOn(
+        c,
+        40,
+        420
+    )
+
+    # =========================
+    # TOTAL
+    # =========================
+
+    c.setFillColor(
+        colors.HexColor("#16a34a")
+    )
+
+    c.rect(
+        350,
+        350,
+        180,
+        40,
+        fill=1
+    )
+
+    c.setFillColor(colors.white)
+
+    c.setFont(
+        "Helvetica-Bold",
+        16
+    )
+
+    c.drawString(
+        370,
+        365,
+        f"TOTAL: ${venta['total']}"
+    )
+
+    # =========================
+    # PIE
+    # =========================
+
+    c.setFillColor(colors.black)
+
+    c.setFont(
+        "Helvetica",
+        10
+    )
+
+    c.drawString(
+        40,
+        100,
+        "Gracias por confiar en SGV FARMA 💚"
+    )
+
+    c.drawString(
+        40,
+        85,
+        "Sistema desarrollado para gestión farmacéutica"
+    )
+
+    # =========================
+    # GUARDAR PDF
+    # =========================
 
     c.save()
 
-    return send_file(ruta)
+    return send_file(
+        ruta,
+        as_attachment=False
+    )
 
 #rutas para inventario
 @app.route('/inventario')

@@ -1,63 +1,186 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Detalle de Venta</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'layout.html' %}
 
-<header>
-    <h1>🧾 Detalle de la Venta #{{ venta.id_venta }}</h1>
-</header>
+{% block titulo %}
+Detalle Venta
+{% endblock %}
 
-<div class="info-venta">
-    <p><strong>📅 Fecha:</strong> 
-        {{ venta.fecha.strftime("%Y-%m-%d") if venta.fecha else "" }}
-    </p>
+{% block encabezado %}
+🧾 Detalle de Venta
+{% endblock %}
 
-    <p><strong>👤 Cliente:</strong> 
-        {{ venta.cliente if venta.cliente else "Sin cliente" }}
-    </p>
+{% block contenido %}
 
-    <p><strong>💵 Total de la Venta:</strong> 
-        ${{ "%.2f"|format(venta.total) }}
-    </p>
+<div class="grafica-box">
 
-    <p><strong>🧮 Cantidad de productos:</strong> 
-        {{ detalles|length }}
-    </p>
+    <div class="detalle-header">
+
+        <h2>
+            Venta #{{ venta.id_venta }}
+        </h2>
+
+        <span class="estado verde">
+
+            Completada
+
+        </span>
+
+    </div>
+
+    <div class="detalle-grid">
+
+        <div class="detalle-card">
+
+            <h3>
+                📅 Fecha
+            </h3>
+
+            <p>
+
+                {{ venta.fecha.strftime("%Y-%m-%d") if venta.fecha else "" }}
+
+            </p>
+
+        </div>
+
+        <div class="detalle-card">
+
+            <h3>
+                👤 Cliente
+            </h3>
+
+            <p>
+
+                {{ venta.cliente if venta.cliente else "Sin cliente" }}
+
+            </p>
+
+        </div>
+
+        <div class="detalle-card">
+
+            <h3>
+                💵 Total
+            </h3>
+
+            <p>
+
+                ${{ "%.2f"|format(venta.total) }}
+
+            </p>
+
+        </div>
+
+        <div class="detalle-card">
+
+            <h3>
+                🧮 Productos
+            </h3>
+
+            <p>
+
+                {{ detalles|length }}
+
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
 
-<h2>Productos Vendidos</h2>
+<div class="grafica-box">
 
-<table>
-    <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio Unitario</th>
-        <th>Subtotal</th>
-    </tr>
+    <h2>
+        Productos Vendidos
+    </h2>
 
-    {% if detalles %}
-        {% for d in detalles %}
-        <tr>
-            <td>{{ d.producto }}</td>
-            <td>{{ d.cantidad }}</td>
-            <td>${{ "%.2f"|format(d.precio_unitario) }}</td>
-            <td>${{ "%.2f"|format(d.subtotal) }}</td>
-        </tr>
-        {% endfor %}
-    {% else %}
-        <tr>
-            <td colspan="4">No hay productos en esta venta</td>
-        </tr>
-    {% endif %}
-</table>
+    <table>
 
-<div class="volver">
-    <a href="{{ url_for('ventas') }}">⬅ Volver a Ventas</a>
+        <thead>
+
+            <tr>
+
+                <th>Producto</th>
+
+                <th>Cantidad</th>
+
+                <th>Precio</th>
+
+                <th>Subtotal</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% if detalles %}
+
+                {% for d in detalles %}
+
+                <tr>
+
+                    <td>
+
+                        {{ d.producto }}
+
+                    </td>
+
+                    <td>
+
+                        {{ d.cantidad }}
+
+                    </td>
+
+                    <td>
+
+                        ${{ "%.2f"|format(d.precio_unitario) }}
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            ${{ "%.2f"|format(d.subtotal) }}
+
+                        </strong>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No hay productos registrados
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+        </tbody>
+
+    </table>
+
+    <div class="volver-box">
+
+        <a href="{{ url_for('ventas') }}"
+           class="btn-volver">
+
+            ⬅ Volver a Ventas
+
+        </a>
+
+    </div>
+
 </div>
 
-</body>
-</html>
+{% endblock %}
