@@ -10,24 +10,79 @@ Panel Cliente
 
 {% block contenido %}
 
-<div class="menu-box">
+<div class="dashboard-container">
 
-    <h2>Bienvenido Cliente</h2>
+    <div class="dashboard-header">
 
-    <p>
-        Realiza tus pedidos de medicamentos fácilmente
-    </p>
+        <h2>
+            Bienvenido {{ session['usuario'] }}
+        </h2>
 
-    <div class="panel-botones">
+        <p>
+            Gestiona tus pedidos y consulta productos fácilmente
+        </p>
 
-        <a href="/catalogo" class="btn-panel">
-            💊 Ver catálogo de productos
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- CATÁLOGO -->
+
+        <a href="/catalogo"
+           class="dashboard-card stock">
+
+            <div class="icono">
+                💊
+            </div>
+
+            <div class="info">
+
+                <h3>Catálogo</h3>
+
+                <p>Ver</p>
+
+            </div>
+
         </a>
 
-        <a href="/pedido_cliente" class="btn-panel">
-            🛒 Realizar pedido
+        <!-- PEDIDO -->
+
+        <a href="/pedido_cliente"
+           class="dashboard-card entrada">
+
+            <div class="icono">
+                🛒
+            </div>
+
+            <div class="info">
+
+                <h3>Nuevo Pedido</h3>
+
+                <p>+</p>
+
+            </div>
+
         </a>
 
+        <!-- PEDIDOS -->
+       <!--
+        <a href="/mis_pedidos"
+           class="dashboard-card movimientos">
+
+            <div class="icono">
+                📦
+            </div>
+
+            <div class="info">
+
+                <h3>Mis Pedidos</h3>
+
+                <p>Ver</p>
+
+            </div>
+
+        </a>
+       -->
     </div>
 
 </div>

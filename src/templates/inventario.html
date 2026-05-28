@@ -1,0 +1,131 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}
+Inventario
+{% endblock %}
+
+{% block encabezado %}
+📦 Control de Inventario
+{% endblock %}
+
+{% block contenido %}
+
+
+
+{% with mensajes = get_flashed_messages(with_categories=True) %}
+    {% if mensajes %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert {{ categoria }}">{{ mensaje }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="dashboard-container">
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card movimientos">
+            <p>{{ movimientos|length }}</p>
+            <p>Total movimientos</p>
+        </div>
+        <div class="dashboard-card entrada">
+             <p>
+                {{ movimientos|selectattr('tipo', 'equalto', 'entrada')|list|length }}
+            
+            </p>
+            <p>Entradas registradas</p>
+        </div>
+        <div class="dashboard-card salida">
+            <div class="numero salida">
+                {{ movimientos|selectattr('tipo', 'equalto', 'salida')|list|length }}
+            </div>
+            <p>Salidas registradas</p>
+        </div>
+        <div class="dashboard-card stock">
+            <p>{{ productos|length }}</p>
+            <p>Productos activos</p>
+        </div>
+    </div>
+
+    <div class="grafica-box">
+        <h2>Registrar <span>movimiento manual</span></h2>
+        <div class="form-row">
+            <form action="/agregar_movimiento" method="POST" class="inventario-form">
+                <select name="id_producto" required>
+                    <option value="">-- Selecciona producto --</option>
+                    {% for p in productos %}
+                        <option value="{{ p.id_producto }}">
+                            {{ p.nombre }} (Stock: {{ p.stock }})
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <select name="tipo" required>
+                    <option value="">-- Tipo --</option>
+                    <option value="entrada">📥 Entrada</option>
+                    <option value="salida">📤 Salida</option>
+                </select>
+
+                <input type="number" name="cantidad" min="1" placeholder="Cantidad" required>
+                <input type="text" name="motivo" placeholder="Motivo (ej: llegó mercancía)" required>
+
+                <button type="submit" class="btn-registrar">➕ Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="grafica-box">
+        <div class="tabla-header">
+            <h2>Historial de movimientos</h2>
+            <span>{{ movimientos|length }} registros</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Stock actual</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movimientos %}
+                <tr>
+                    <td>{{ m.id_movimiento }}</td>
+                    <td>{{ m.fecha }}</td>
+                    <td>{{ m.producto }}</td>
+                    <td>
+                        <span class="badge {{ m.tipo }}">
+                            {% if m.tipo == 'entrada' %}📥 Entrada
+                            {% else %}📤 Salida{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ m.cantidad }}</td>
+                    <td>{{ m.motivo }}</td>
+                    <td>{{ m.stock }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const mensajes = document.querySelectorAll('.alert');
+    setTimeout(() => {
+        mensajes.forEach(msg => {
+            msg.classList.add('fade-out');
+            setTimeout(() => { msg.remove(); }, 900);
+        });
+    }, 2000);
+});
+</script>
+
+{% endblock %}

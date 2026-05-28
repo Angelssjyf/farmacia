@@ -24,7 +24,7 @@ Productos
 
 <section class="form-contenedor">
 
-    <form action="/agregar_producto" method="post" class="form-producto">
+    <form action="/agregar_producto" method="post" class="form-producto" enctype="multipart/form-data">
 
         <input type="text"
                name="nombre"
@@ -54,6 +54,13 @@ Productos
         <input type="date"
                name="fecha_vencimiento"
                required>
+
+        
+        <label>Imagen:</label>
+
+        <input type="file"
+               name="imagen"
+               accept="image/*">
 
         <select name="proveedor_id" required>
 

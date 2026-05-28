@@ -1,9 +1,30 @@
+import os
+from werkzeug.utils import secure_filename
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta_segura"
+
+UPLOAD_FOLDER = os.path.join('static', 'img', 'productos')
+
+ALLOWED_EXTENSIONS = {
+    'png',
+    'jpg',
+    'jpeg',
+    'webp'
+}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def conectar():
     return mysql.connector.connect(
@@ -175,6 +196,8 @@ def detalle_venta(id):
     conexion.close()
 
     return render_template("detalle_venta.html", venta=venta, detalles=detalles)
+
+
 # pedido cliente
 @app.route('/pedido_cliente')
 def pedido_cliente():
@@ -288,14 +311,139 @@ def pedidos():
         pedidos=pedidos
     )
 
+@app.route('/aprobar_pedido/<int:id>')
+def aprobar_pedido(id):
+
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    # Obtener pedido
+    cursor.execute("""
+        SELECT *
+        FROM pedidos
+        WHERE id_pedido = %s
+    """, (id,))
+
+    pedido = cursor.fetchone()
+
+    # Obtener detalles
+    cursor.execute("""
+        SELECT
+            dp.id_producto,
+            dp.cantidad,
+            p.stock,
+            p.precio
+        FROM detalle_pedidos dp
+        JOIN productos p
+            ON dp.id_producto = p.id_producto
+        WHERE dp.id_pedido = %s
+    """, (id,))
+
+    detalles = cursor.fetchall()
+
+    total_venta = 0
+    cantidad_total = 0
+
+    for item in detalles:
+        total_venta += item['precio'] * item['cantidad']
+        cantidad_total += item['cantidad']
+
+    # Crear venta
+    cursor.execute("""
+        INSERT INTO ventas
+        (
+            id_cliente,
+            fecha,
+            cantidad,
+            total
+        )
+        VALUES (%s, CURDATE(), %s, %s)
+    """, (
+        pedido['id_cliente'],
+        cantidad_total,
+        total_venta
+    ))
+
+    id_venta = cursor.lastrowid
+
+    # Crear detalle venta y descontar stock
+    for item in detalles:
+
+        subtotal = item['precio'] * item['cantidad']
+
+        cursor.execute("""
+            INSERT INTO detalle_ventas
+            (
+                id_venta,
+                id_producto,
+                cantidad,
+                precio_unitario,
+                subtotal
+            )
+            VALUES (%s,%s,%s,%s,%s)
+        """, (
+            id_venta,
+            item['id_producto'],
+            item['cantidad'],
+            item['precio'],
+            subtotal
+        ))
+
+        nuevo_stock = item['stock'] - item['cantidad']
+
+        cursor.execute("""
+            UPDATE productos
+            SET stock = %s
+            WHERE id_producto = %s
+        """, (
+            nuevo_stock,
+            item['id_producto']
+        ))
+
+        if nuevo_stock <= 0:
+
+            cursor.execute("""
+                UPDATE productos
+                SET estado = 'agotado'
+                WHERE id_producto = %s
+            """, (
+                item['id_producto'],
+            ))
+
+    # Marcar pedido como procesado
+    cursor.execute("""
+        UPDATE pedidos
+        SET estado = 'procesado'
+        WHERE id_pedido = %s
+    """, (id,))
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for('pedidos'))
 #catalogo cliente
 @app.route('/catalogo')
 def catalogo():
+
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT id_producto, nombre, descripcion, precio, stock
+        SELECT
+            id_producto,
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            imagen
         FROM productos
         WHERE stock > 0
     """)
@@ -304,7 +452,10 @@ def catalogo():
 
     conexion.close()
 
-    return render_template("catalogo.html", productos=productos)
+    return render_template(
+        "catalogo.html",
+        productos=productos
+    )
 
 @app.route("/ventas")
 def ventas():
@@ -499,8 +650,10 @@ def productos():
     )
 
 # Registrar un producto nuevo
+# Registrar un producto nuevo
 @app.route('/agregar_producto', methods=['POST'])
 def agregar_producto():
+
     nombre = request.form['nombre']
     descripcion = request.form['descripcion']
     precio = request.form['precio']
@@ -508,6 +661,22 @@ def agregar_producto():
     proveedor_id = request.form['proveedor_id']
     lote = request.form['lote']
     fecha_vencimiento = request.form['fecha_vencimiento']
+
+    # IMAGEN
+    imagen = request.files['imagen']
+
+    nombre_imagen = None
+
+    if imagen and allowed_file(imagen.filename):
+
+        nombre_imagen = secure_filename(imagen.filename)
+
+        ruta_imagen = os.path.join(
+            app.config['UPLOAD_FOLDER'],
+            nombre_imagen
+        )
+
+        imagen.save(ruta_imagen)
 
     conexion = conectar()
     cursor = conexion.cursor()
@@ -520,9 +689,10 @@ def agregar_producto():
             stock,
             proveedor_id,
             lote,
-            fecha_vencimiento
+            fecha_vencimiento,
+            imagen
         )
-        VALUES (%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
         nombre,
         descripcion,
@@ -530,14 +700,17 @@ def agregar_producto():
         stock,
         proveedor_id,
         lote,
-        fecha_vencimiento
+        fecha_vencimiento,
+        nombre_imagen
     ))
 
     conexion.commit()
+
     cursor.close()
     conexion.close()
 
     flash("Producto registrado correctamente")
+
     return redirect(url_for('productos'))
 
 @app.route('/eliminar_producto/<int:id>')
@@ -836,6 +1009,53 @@ def dashboard():
     cursor.execute("SELECT COUNT(*) AS total FROM ventas")
     ventas = cursor.fetchone()['total']
 
+    # PRODUCTOS MÁS VENDIDOS
+    cursor.execute("""
+     SELECT 
+         p.nombre,
+         SUM(dv.cantidad) AS total_vendidos
+     FROM detalle_ventas dv
+     JOIN productos p
+        ON dv.id_producto = p.id_producto
+     GROUP BY p.nombre
+     ORDER BY total_vendidos DESC
+     LIMIT 5
+    """)
+
+    productos_vendidos = cursor.fetchall()
+
+    nombres_productos = []
+    cantidades_productos = []
+
+    for producto in productos_vendidos:
+
+     nombres_productos.append(producto['nombre'])
+     cantidades_productos.append(producto['total_vendidos'])
+
+    # ventas por mes
+    cursor.execute("""
+        SELECT 
+        MONTH(fecha) AS mes,
+        COUNT(*) AS total
+        FROM ventas
+        GROUP BY MONTH(fecha)
+   """)
+
+    datos_ventas = cursor.fetchall()
+
+    meses = []
+    totales = []
+
+    for fila in datos_ventas:
+
+      meses.append(fila['mes'])
+      totales.append(fila['total'])
+
+    print(meses)
+    print(totales) 
+
+    print(datos_ventas)
+
     conexion.close()
 
     return render_template(
@@ -843,7 +1063,13 @@ def dashboard():
         total_productos=total_productos,
         agotados=agotados,
         clientes=clientes,
-        ventas=ventas
+        ventas=ventas,
+        meses=meses,
+        totales=totales,
+        nombres_productos=nombres_productos,
+        cantidades_productos=cantidades_productos
+        
+        
     )
 
 
@@ -910,6 +1136,68 @@ def generar_factura(id):
     c.save()
 
     return send_file(ruta)
+
+#rutas para inventario
+@app.route('/inventario')
+def inventario():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT i.id_movimiento, i.tipo, i.cantidad, i.motivo, i.fecha,
+               p.nombre AS producto, p.stock
+        FROM inventario i
+        JOIN productos p ON i.id_producto = p.id_producto
+        ORDER BY i.fecha DESC
+    """)
+    movimientos = cursor.fetchall()
+    cursor.execute("SELECT id_producto, nombre, stock FROM productos ORDER BY nombre")
+    productos = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    return render_template("inventario.html", movimientos=movimientos, productos=productos)
+
+@app.route('/agregar_movimiento', methods=['POST'])
+def agregar_movimiento():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    if session['rol'] not in ['admin', 'superadmin']:
+        return redirect(url_for('login'))
+    id_producto = request.form['id_producto']
+    tipo = request.form['tipo']
+    cantidad = int(request.form['cantidad'])
+    motivo = request.form['motivo']
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute("""
+        INSERT INTO inventario (id_producto, tipo, cantidad, motivo)
+        VALUES (%s, %s, %s, %s)
+    """, (id_producto, tipo, cantidad, motivo))
+    if tipo == 'entrada':
+        cursor.execute("""
+            UPDATE productos SET stock = stock + %s WHERE id_producto = %s
+        """, (cantidad, id_producto))
+        cursor.execute("""
+            UPDATE productos SET estado = 'disponible'
+            WHERE id_producto = %s AND estado = 'agotado'
+        """, (id_producto,))
+    elif tipo == 'salida':
+        cursor.execute("""
+            UPDATE productos SET stock = stock - %s WHERE id_producto = %s
+        """, (cantidad, id_producto))
+        cursor.execute("""
+            UPDATE productos SET estado = 'agotado'
+            WHERE id_producto = %s AND stock <= 0
+        """, (id_producto,))
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+    flash("Movimiento registrado correctamente", "success")
+    return redirect(url_for('inventario'))
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

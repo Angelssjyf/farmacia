@@ -10,28 +10,178 @@ Dashboard
 
 {% block contenido %}
 
-<div class="cards">
+<div class="dashboard-container">
 
-    <div class="card">
-        <h2>📦 Productos</h2>
-        <p>{{ total_productos }}</p>
+    <div class="dashboard-header">
+        <h2>Bienvenido, {{ session['usuario'] }}</h2>
+        <p>
+            Panel principal del sistema farmacéutico
+        </p>
     </div>
 
-    <div class="card">
-        <h2>🔴 Agotados</h2>
-        <p>{{ agotados }}</p>
-    </div>
+    <div class="dashboard-grid">
 
-    <div class="card">
-        <h2>👥 Clientes</h2>
-        <p>{{ clientes }}</p>
-    </div>
+        <!-- PRODUCTOS -->
+        <div class="dashboard-card productos">
 
-    <div class="card">
-        <h2>💰 Ventas</h2>
-        <p>{{ ventas }}</p>
+            <div class="icono">
+                📦
+            </div>
+
+            <div class="info">
+                <h3>Productos</h3>
+                <p>{{ total_productos }}</p>
+            </div>
+
+        </div>
+
+        <!-- AGOTADOS -->
+        <div class="dashboard-card agotados">
+
+            <div class="icono">
+                🔴
+            </div>
+
+            <div class="info">
+                <h3>Agotados</h3>
+                <p>{{ agotados }}</p>
+            </div>
+
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="dashboard-card clientes">
+
+            <div class="icono">
+                👥
+            </div>
+
+            <div class="info">
+                <h3>Clientes</h3>
+                <p>{{ clientes }}</p>
+            </div>
+
+        </div>
+
+        <!-- VENTAS -->
+        <div class="dashboard-card ventas">
+
+            <div class="icono">
+                💰
+            </div>
+
+            <div class="info">
+                <h3>Ventas</h3>
+                <p>{{ ventas }}</p>
+            </div>
+
+        </div>
+
+
+        <div class="grafica-box">
+
+           <h2>📈 Ventas por Mes</h2>
+
+           <canvas id="graficaVentas"></canvas>
+
+        </div>
+
+        <div class="grafica-box">
+
+           <h2>🔥 Productos Más Vendidos</h2>
+
+           <canvas id="graficaProductos"></canvas>
+
+        </div>
+
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const meses = JSON.parse('{{ meses | tojson | safe }}');
+const totales = JSON.parse('{{ totales | tojson | safe }}');
+
+const ctx = document.getElementById('graficaVentas');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: meses,
+
+        datasets: [{
+
+            label: 'Ventas realizadas',
+
+            data: totales,
+
+            backgroundColor: '#0f6e56',
+
+            borderRadius: 10,
+
+            borderWidth: 0
+
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+
+
+<script>
+
+const nombresProductos = JSON.parse('{{ nombres_productos | tojson | safe }}');
+const cantidadesProductos = JSON.parse('{{ cantidades_productos | tojson | safe }}');
+
+const ctxProductos = document.getElementById('graficaProductos');
+
+new Chart(ctxProductos, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: nombresProductos,
+
+        datasets: [{
+
+            label: 'Productos vendidos',
+
+            data: cantidadesProductos,
+
+            borderWidth: 1
+        }]
+    },
+
+    options: {
+
+        responsive: true
+    }
+});
+
+</script>
+
+
+
+
 
 {% endblock %}

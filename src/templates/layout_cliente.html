@@ -23,43 +23,66 @@
 
 <body>
 
-<div class="cards-dashboard">
+    <!-- SIDEBAR -->
 
-    <a href="/catalogo" class="card">
-        <h3>💊 Catálogo</h3>
-        <p>Consultar productos disponibles</p>
-    </a>
+    <div class="sidebar">
 
-    <a href="/pedido_cliente" class="card">
-        <h3>🛒 Nuevo Pedido</h3>
-        <p>Solicitar medicamentos</p>
-    </a>
+        <h2>SGV FARMA</h2>
 
-    <a href="/mis_pedidos" class="card">
-        <h3>📦 Mis Pedidos</h3>
-        <p>Consultar estado de solicitudes</p>
-    </a>
+        <a href="{{ url_for('panel_cliente') }}">
+            🏠 Inicio
+        </a>
 
-</div>
+        <a href="/catalogo">
+            💊 Catálogo
+        </a>
 
-<div class="contenido">
+        <a href="/pedido_cliente">
+            🛒 Realizar Pedido
+        </a>
 
-    <header>
+        
 
-        <h1>
+        <a href="/logout">
+            🚪 Cerrar sesión
+        </a>
 
-            {% block encabezado %}
-            Panel Cliente
-            {% endblock %}
+    </div>
 
-        </h1>
+    <!-- CONTENIDO -->
 
-    </header>
+    <div class="contenido">
 
-    {% block contenido %}
-    {% endblock %}
+        <div class="topbar">
 
-</div>
+            <div>
+
+                <h1>
+                    {% block encabezado %}
+                    Panel Cliente
+                    {% endblock %}
+                </h1>
+
+                <p class="subtitulo">
+                    Bienvenido {{ session['usuario'] }}
+                </p>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="usuario">
+                    👤 Cliente
+                </div>
+
+            </div>
+
+        </div>
+
+        {% block contenido %}
+        {% endblock %}
+
+    </div>
 
 </body>
 </html>
